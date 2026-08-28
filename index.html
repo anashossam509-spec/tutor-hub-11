@@ -3,21 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدرسين أكسلنت - منصة الحجز</title>
+    <title>مدرسين أكسلنت - منصة التوصية</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <h1>📚 مدرسين الشروق</h1>
-        <p>اختر مدرسك، احجز الآن، وتواصل مباشرة عبر واتساب</p>
+        <h1>📚 منصة مدرسين أكسلنت</h1>
+        <p>دليلك لأفضل المدرسين في مدينة الشروق - تقييمات حقيقية من أمهات وطلاب</p>
     </header>
 
+    <!-- الفلاتر -->
     <section id="filters">
         <input type="text" id="searchInput" placeholder="🔍 ابحث عن مدرس أو مادة..." onkeyup="filterTeachers()">
+        
+        <select id="stageFilter" onchange="filterTeachers()">
+            <option value="all">كل المراحل</option>
+            <option value="ابتدائي">ابتدائي</option>
+            <option value="اعدادي">اعدادي</option>
+            <option value="ثانوي">ثانوي</option>
+        </select>
+
         <select id="subjectFilter" onchange="filterTeachers()">
             <option value="all">كل المواد</option>
-            <option value="رياضيات">رياضيات</option>
+            <option value="ماث">ماث</option>
             <option value="عربي">عربي</option>
             <option value="إنجليزي">إنجليزي</option>
             <option value="علوم">علوم</option>
@@ -26,6 +35,21 @@
             <option value="تاريخ">تاريخ</option>
             <option value="جغرافيا">جغرافيا</option>
         </select>
+
+        <select id="schoolFilter" onchange="filterTeachers()">
+            <option value="all">كل المدارس</option>
+            <option value="مدرسة الشروق الرسمية">مدرسة الشروق الرسمية</option>
+            <option value="مدرسة النزهة الإعدادية">مدرسة النزهة الإعدادية</option>
+            <option value="مدرسة السلام الثانوية">مدرسة السلام الثانوية</option>
+            <option value="مدرسة المستقبل الخاصة">مدرسة المستقبل الخاصة</option>
+            <option value="مدرسة الأمل الرسمية">مدرسة الأمل الرسمية</option>
+        </select>
+
+        <div id="price-filter">
+            <span>💰 السعر:</span>
+            <input type="range" id="priceRange" min="50" max="300" value="300" oninput="updatePriceLabel()">
+            <span id="priceLabel">٣٠٠ ج</span>
+        </div>
     </section>
 
     <section id="teachers-container">
@@ -33,37 +57,8 @@
     </section>
 
     <footer>
-        <p>© 2026 مدرسين أكسلنت - جميع الحقوق محفوظة</p>
+        <p>© 2026 منصة مدرسين أكسلنت - جميع الحقوق محفوظة</p>
     </footer>
-
-    <!-- زر حجوزاتي -->
-    <button id="bookings-fab" onclick="showMyBookings()">
-        📋 حجوزاتي
-        <span class="badge" id="bookings-badge">0</span>
-    </button>
-
-    <!-- زر لوحة التحكم (خاص بك) -->
-    <button id="admin-fab" onclick="showAdminPanel()">
-        📊 لوحة التحكم
-    </button>
-
-    <!-- مودال الحجوزات -->
-    <div id="bookingsModal" class="modal">
-        <div class="modal-content">
-            <h2>📋 حجوزاتي</h2>
-            <div id="bookings-list"></div>
-            <button class="close-btn" onclick="closeModal('bookingsModal')">إغلاق</button>
-        </div>
-    </div>
-
-    <!-- مودال لوحة التحكم -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <h2>📊 إحصاءات المدرسين</h2>
-            <div id="admin-list"></div>
-            <button class="close-btn" onclick="closeModal('adminModal')">إغلاق</button>
-        </div>
-    </div>
 
     <script src="script.js"></script>
 </body>
