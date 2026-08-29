@@ -53,7 +53,7 @@ function loadTeachers() {
         teachers = JSON.parse(saved);
     } else {
         teachers = [
-            {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23, video: ""},
+            {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23, video: "https://youtu.be/dQw4w9WgXcQ"},
             {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31, video: ""},
             {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18, video: ""},
             {id: 4, name: "نورا أحمد", subject: "علوم", stages: ["ابتدائي", "اعدادي"], phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15, video: ""},
@@ -109,7 +109,6 @@ function displayTeachers(teachersList) {
         const displayTotal = teacherRating ? 1 : (teacher.totalRatings || 0);
         const stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : '';
 
-        // ===== زر الفيديو =====
         const videoButton = teacher.video ? `
             <a href="${teacher.video}" target="_blank" class="video-btn" style="
                 display: inline-block;
