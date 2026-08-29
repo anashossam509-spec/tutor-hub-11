@@ -422,13 +422,13 @@
             <input type="hidden" id="editId">
             <input type="text" id="teacherName" placeholder="اسم المدرس">
             <input type="text" id="teacherSubject" placeholder="المادة (تأسيس، ماث، عربي، إنجليزي...)">
-            
+
             <div class="checkbox-group">
                 <label><input type="checkbox" id="stage1" value="ابتدائي"> ابتدائي</label>
                 <label><input type="checkbox" id="stage2" value="اعدادي"> اعدادي</label>
                 <label><input type="checkbox" id="stage3" value="ثانوي"> ثانوي</label>
             </div>
-            
+
             <input type="text" id="teacherPhone" placeholder="رقم واتساب (مثال: 201012345678)">
             <input type="text" id="teacherVideo" placeholder="رابط فيديو يوتيوب (مثال: https://youtu.be/VIDEO_ID)">
             <textarea id="teacherDescription" placeholder="وصف المدرس"></textarea>
@@ -443,9 +443,9 @@
         // ==========================================
         // ===== الجزء الأول: كلمة المرور و JSON Bin =====
         // ==========================================
-        
+
         const ADMIN_PASSWORD = "php123";
-        const JSONBIN_BIN_ID = '67b3310dacd3cb34a8e66cbf';
+        const JSONBIN_BIN_ID = '6a936a6cf5f4af5e295310fe';
         const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
         const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
@@ -468,13 +468,20 @@
 
         async function saveRatings(ratings) {
             try {
+                const res = await fetch(JSONBIN_URL, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+                const data = await res.json();
+                const currentData = data.record || {};
+                currentData.ratings = ratings;
+
                 await fetch(JSONBIN_URL, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Master-Key': JSONBIN_API_KEY
                     },
-                    body: JSON.stringify({ ratings })
+                    body: JSON.stringify(currentData)
                 });
             } catch (error) {
                 console.error('Error saving ratings:', error);
@@ -502,7 +509,7 @@
                 const data = await res.json();
                 const currentData = data.record || {};
                 currentData.teachers = teachersData;
-                
+
                 await fetch(JSONBIN_URL, {
                     method: 'PUT',
                     headers: {
@@ -563,14 +570,12 @@
         let teachers = [];
 
         async function loadTeachers() {
-            // ١. جلب من السحابة أولاً
             const cloudTeachers = await getTeachersFromCloud();
-            
+
             if (cloudTeachers && cloudTeachers.length > 0) {
                 teachers = cloudTeachers;
                 localStorage.setItem('adminTeachers', JSON.stringify(teachers));
             } else {
-                // ٢. لو مفيش في السحابة، جيب من localStorage
                 const saved = localStorage.getItem('adminTeachers');
                 if (saved) {
                     teachers = JSON.parse(saved);
@@ -620,7 +625,7 @@
                         </div>
                         <div class="actions">
                             <button class="btn-edit" onclick="editTeacher(${t.id})">✏️ تعديل</button>
-                            <button class="btn-delete" onclick="deleteTeacher(${t.id})">🗑️ حذف<                            /button>
+                            <button class="btn-delete" onclick="deleteTeacher(${t.id})">🗑️ حذف</button>
                         </div>
                     </div>
                 `;
@@ -678,11 +683,11 @@
             document.getElementById('editId').value = id;
             document.getElementById('teacherName').value = teacher.name;
             document.getElementById('teacherSubject').value = teacher.subject;
-            
+
             document.getElementById('stage1').checked = teacher.stages && teacher.stages.includes('ابتدائي');
             document.getElementById('stage2').checked = teacher.stages && teacher.stages.includes('اعدادي');
             document.getElementById('stage3').checked = teacher.stages && teacher.stages.includes('ثانوي');
-            
+
             document.getElementById('teacherPhone').value = teacher.phone;
             document.getElementById('teacherVideo').value = teacher.video || '';
             document.getElementById('teacherDescription').value = teacher.description || '';
@@ -693,12 +698,12 @@
             const id = document.getElementById('editId').value;
             const name = document.getElementById('teacherName').value.trim();
             const subject = document.getElementById('teacherSubject').value.trim();
-            
+
             const stages = [];
             if (document.getElementById('stage1').checked) stages.push('ابتدائي');
             if (document.getElementById('stage2').checked) stages.push('اعدادي');
             if (document.getElementById('stage3').checked) stages.push('ثانوي');
-            
+
             const phone = document.getElementById('teacherPhone').value.trim();
             const video = document.getElementById('teacherVideo').value.trim();
             const description = document.getElementById('teacherDescription').value.trim();
@@ -820,7 +825,7 @@
                     delete ratings[teacherId];
                 }
                 await saveRatings(ratings);
-                
+
                 if (teacher) {
                     const values = Object.values(ratings[teacherId] || {}).map(r => r.rating);
                     if (values.length > 0) {
@@ -833,7 +838,7 @@
                     }
                     saveTeachers();
                 }
-                
+
                 showToast('✅ تم حذف التقييم بنجاح', 'success');
                 await loadRatings();
                 renderTeachers();
