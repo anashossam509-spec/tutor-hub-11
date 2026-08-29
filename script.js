@@ -125,18 +125,36 @@ async function saveTeachersToCloud(teachersData) {
 let teachers = [];
 
 async function loadTeachers() {
+    // ١. حاول جلب من JSON Bin
     const cloudTeachers = await getTeachersFromCloud();
     
     if (cloudTeachers && cloudTeachers.length > 0) {
         teachers = cloudTeachers;
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
     } else {
-        teachers = [];
-        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-        await saveTeachersToCloud(teachers);
+        // ٢. لو مفيش في السحابة، جيب من localStorage
+        const saved = localStorage.getItem('adminTeachers');
+        if (saved) {
+            teachers = JSON.parse(saved);
+            // لو localStorage فيه بيانات، احفظها في السحابة
+            if (teachers.length > 0) {
+                await saveTeachersToCloud(teachers);
+            }
+        } else {
+            // ٣. لو مفيش خالص، ابدأ بمصفوفة فارغة
+            teachers = [];
+            localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+            await saveTeachersToCloud(teachers);
+        }
     }
     
-    displayTeachers(teachers);
+    renderTeachers();
+    updateStats();
+}
+
+function saveTeachers() {
+    localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+    saveTeachersToCloud(teachers);
 }
 
 function saveTeachers() {
