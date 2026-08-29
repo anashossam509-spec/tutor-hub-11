@@ -55,6 +55,7 @@ console.log('✅ JSON Bin connected successfully');
 // ===== ٣. دوال JSON Bin =====
 // ==========================================
 
+// قراءة التقييمات من JSON Bin
 async function getRatings() {
     try {
         const res = await fetch(JSONBIN_URL, {
@@ -68,6 +69,7 @@ async function getRatings() {
     }
 }
 
+// كتابة التقييمات في JSON Bin
 async function saveRatings(ratings) {
     try {
         await fetch(JSONBIN_URL, {
@@ -83,6 +85,7 @@ async function saveRatings(ratings) {
     }
 }
 
+// قراءة المدرسين من JSON Bin
 async function getTeachersFromCloud() {
     try {
         const res = await fetch(JSONBIN_URL, {
@@ -96,6 +99,7 @@ async function getTeachersFromCloud() {
     }
 }
 
+// كتابة المدرسين في JSON Bin
 async function saveTeachersToCloud(teachersData) {
     try {
         const res = await fetch(JSONBIN_URL, {
@@ -125,18 +129,18 @@ async function saveTeachersToCloud(teachersData) {
 let teachers = [];
 
 async function loadTeachers() {
-    // ١. حاول جلب من JSON Bin
+    // ١. حاول جلب من JSON Bin (السحابة)
     const cloudTeachers = await getTeachersFromCloud();
     
     if (cloudTeachers && cloudTeachers.length > 0) {
         teachers = cloudTeachers;
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
     } else {
-        // ٢. لو مفيش في السحابة، جيب من localStorage
+        // ٢. لو مفيش في السحابة، جيب من localStorage (احتياطي)
         const saved = localStorage.getItem('adminTeachers');
         if (saved) {
             teachers = JSON.parse(saved);
-            // لو localStorage فيه بيانات، احفظها في السحابة
+            // لو localStorage فيه بيانات، احفظها في السحابة عشان تتشارك
             if (teachers.length > 0) {
                 await saveTeachersToCloud(teachers);
             }
@@ -148,13 +152,7 @@ async function loadTeachers() {
         }
     }
     
-    renderTeachers();
-    updateStats();
-}
-
-function saveTeachers() {
-    localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-    saveTeachersToCloud(teachers);
+    displayTeachers(teachers);
 }
 
 function saveTeachers() {
@@ -185,7 +183,22 @@ function displayTeachers(teachersList) {
         const stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : '';
 
         const videoButton = teacher.video ? `
-            <a href="${teacher.video}" target="_blank" class="video-btn">
+            <a href="${teacher.video}" target="_blank" class="video-btn" style="
+                display: inline-block;
+                background: #ff0000;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 30px;
+                text-decoration: none;
+                font-weight: bold;
+                margin-top: 8px;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                border: none;
+                cursor: pointer;
+                font-size: 0.95rem;
+            ">
                 🎬 فيديو تعريفي عن المدرس
             </a>
         ` : '';
@@ -234,7 +247,6 @@ function filterTeachers() {
     const subjectFilter = document.getElementById('subjectFilter').value;
 
     const filtered = teachers.filter(teacher => {
-        // البحث بالاسم أو المادة
         const matchSearch = teacher.name.toLowerCase().includes(searchText) || 
                            teacher.subject.toLowerCase().includes(searchText);
         const matchStage = stageFilter === 'all' || (teacher.stages && teacher.stages.includes(stageFilter));
