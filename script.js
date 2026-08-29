@@ -11,7 +11,7 @@ const teachers = [
         name: "أحمد محمد",
         subject: "ماث",
         stage: "ثانوي",
-        school: "مدرسة السلام الثانوية",
+        school: "",
         price: 150,
         rating: 4.8,
         totalRatings: 23,
