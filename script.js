@@ -69,7 +69,13 @@ function loadTeachers() {
             {id: 7, name: "عمر حسن", subject: "تاريخ", stage: "اعدادي", price: 110, phone: "2010444555666", description: "أسلوب قصصي ممتع", rating: 4.3, totalRatings: 9},
             {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stage: "اعدادي", price: 110, phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط", rating: 4.4, totalRatings: 11},
             {id: 9, name: "مصطفى رجب", subject: "ماث", stage: "اعدادي", price: 130, phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية", rating: 4.2, totalRatings: 14},
-            {id: 10, name: "هدى سمير", subject: "إنجليزي", stage: "ابتدائي", price: 90, phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22}
+            {id: 10, name: "هدى سمير", subject: "إنجليزي", stage: "ابتدائي", price: 90, phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22},
+            
+            // المواد الجديدة
+            {id: 11, name: "ياسر محمود", subject: "اداره اعمال", stage: "ثانوي", price: 160, phone: "2010888999000", description: "خبير في إدارة الأعمال والتسويق", rating: 4.7, totalRatings: 8},
+            {id: 12, name: "نهى سامي", subject: "محاسبه", stage: "ثانوي", price: 170, phone: "2010999000111", description: "خبرة في المحاسبة المالية والتدقيق", rating: 4.6, totalRatings: 6},
+            {id: 13, name: "عادل فكري", subject: "فلسفه", stage: "ثانوي", price: 140, phone: "2010100011122", description: "شرح الفلسفة بأسلوب مبسط ومشوق", rating: 4.8, totalRatings: 10},
+            {id: 14, name: "شيماء أحمد", subject: "برمجه", stage: "ثانوي", price: 200, phone: "2010111122233", description: "مبرمجة محترفة، تدرس Python و JavaScript", rating: 4.9, totalRatings: 15}
         ];
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
     }
@@ -125,12 +131,29 @@ function displayTeachers(teachersList) {
                     <span class="phone">${teacher.phone}</span>
                 </div>
                 <p style="font-size:0.9rem;color:#7f8c8d;margin:10px 0;text-align:right;">📝 ${teacher.description || ''}</p>
+                
                 <a href="https://wa.me/${teacher.phone}?text=السلام%20عليكم%20أستاذ%20${encodeURIComponent(teacher.name)}،%20أنا%20جيت%20من%20منصة%20Teachers%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" 
                    class="whatsapp-btn" target="_blank">
                     📱 تواصل مع المدرس
                 </a>
+                
                 <button class="rate-btn" onclick="rateTeacher(${teacher.id})">
                     ⭐ قيم المدرس
+                </button>
+
+                <!-- زر مشاركة المنصة -->
+                <button class="share-btn" onclick="sharePlatform(${teacher.id})" style="
+                    background: #1a2a6c;
+                    color: white;
+                    padding: 8px 15px;
+                    border: none;
+                    border-radius: 30px;
+                    cursor: pointer;
+                    margin-top: 8px;
+                    width: 100%;
+                    font-weight: bold;
+                ">
+                    📢 شارك المنصة مع طلابك وأولياء الأمور
                 </button>
             </div>
         `;
@@ -229,14 +252,34 @@ function rateTeacher(teacherId) {
 }
 
 // ==========================================
-// ===== ٦. لوحة التحكم =====
+// ===== ٦. مشاركة المنصة =====
+// ==========================================
+
+function sharePlatform(teacherId) {
+    const teacher = teachers.find(t => t.id === teacherId);
+    if (!teacher) return;
+
+    const url = window.location.href;
+    const message = 
+        `📚 أنا المدرس ${teacher.name} على منصة Teachers Hub\n` +
+        `شوفوا تقييماتي وتواصلوا معي:\n` +
+        `${url}\n\n` +
+        `👨‍🎓 للطلاب: قيموا مدرسكم وساعدوه يظهر في المنصة\n` +
+        `👨‍👩‍👦 لأولياء الأمور: شوفوا التقييمات وتواصلوا مع أفضل المدرسين\n` +
+        `👨‍🏫 للمدرسين: سجلوا في المنصة ووصلوا لأكبر عدد من الطلاب`;
+    
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+}
+
+// ==========================================
+// ===== ٧. لوحة التحكم =====
 // ==========================================
 
 function showAdminPanel() {
     const password = prompt("🔐 أدخل كلمة المرور للوصول إلى لوحة التحكم:");
     if (password === null) return;
 
-    if (password === "PHP123") {
+    if (password === "php123") {
         window.location.href = 'admin.html';
     } else {
         alert('❌ كلمة المرور غير صحيحة!');
@@ -244,7 +287,7 @@ function showAdminPanel() {
 }
 
 // ==========================================
-// ===== ٧. تحميل الصفحة =====
+// ===== ٨. تحميل الصفحة =====
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', function() {
