@@ -441,19 +441,16 @@
 
     <script>
         // ==========================================
-        // ===== ١. كلمة المرور =====
+        // ===== الجزء الأول: كلمة المرور و JSON Bin =====
         // ==========================================
+        
         const ADMIN_PASSWORD = "php123";
-
-        // ==========================================
-        // ===== ٢. تهيئة JSON Bin =====
-        // ==========================================
         const JSONBIN_BIN_ID = '67b3310dacd3cb34a8e66cbf';
         const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
         const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
         // ==========================================
-        // ===== ٣. دوال JSON Bin =====
+        // ===== الجزء الثاني: دوال JSON Bin =====
         // ==========================================
 
         async function getRatings() {
@@ -514,13 +511,14 @@
                     },
                     body: JSON.stringify(currentData)
                 });
+                console.log('✅ تم الحفظ في JSON Bin بنجاح');
             } catch (error) {
                 console.error('Error saving teachers:', error);
             }
         }
 
         // ==========================================
-        // ===== ٤. نظام الدخول =====
+        // ===== الجزء الثالث: نظام الدخول =====
         // ==========================================
 
         function login() {
@@ -559,39 +557,35 @@
         }
 
         // ==========================================
-        // ===== ٥. بيانات المدرسين =====
+        // ===== الجزء الرابع: بيانات المدرسين =====
         // ==========================================
 
         let teachers = [];
 
         async function loadTeachers() {
-    // ١. حاول تجيب من JSON Bin
-    const cloudTeachers = await getTeachersFromCloud();
-    
-    if (cloudTeachers && cloudTeachers.length > 0) {
-        teachers = cloudTeachers;
-        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-    } else {
-        // ٢. لو مفيش في السحابة، جيب من localStorage
-        const saved = localStorage.getItem('adminTeachers');
-        if (saved) {
-            teachers = JSON.parse(saved);
-            // لو localStorage فيه بيانات، احفظها في السحابة
-            if (teachers.length > 0) {
-                await saveTeachersToCloud(teachers);
+            // ١. جلب من السحابة أولاً
+            const cloudTeachers = await getTeachersFromCloud();
+            
+            if (cloudTeachers && cloudTeachers.length > 0) {
+                teachers = cloudTeachers;
+                localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+            } else {
+                // ٢. لو مفيش في السحابة، جيب من localStorage
+                const saved = localStorage.getItem('adminTeachers');
+                if (saved) {
+                    teachers = JSON.parse(saved);
+                    if (teachers.length > 0) {
+                        await saveTeachersToCloud(teachers);
+                    }
+                } else {
+                    teachers = [];
+                    localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+                    await saveTeachersToCloud(teachers);
+                }
             }
-        } else {
-            // ٣. لو مفيش خالص، ابدأ بمصفوفة فارغة
-            teachers = [];
-            localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-            await saveTeachersToCloud(teachers);
+            renderTeachers();
+            updateStats();
         }
-    }
-    
-    renderTeachers();
-    updateStats();
-}
-        
 
         function saveTeachers() {
             localStorage.setItem('adminTeachers', JSON.stringify(teachers));
@@ -599,7 +593,7 @@
         }
 
         // ==========================================
-        // ===== ٦. عرض المدرسين =====
+        // ===== الجزء الخامس: عرض المدرسين =====
         // ==========================================
 
         function renderTeachers() {
@@ -626,7 +620,7 @@
                         </div>
                         <div class="actions">
                             <button class="btn-edit" onclick="editTeacher(${t.id})">✏️ تعديل</button>
-                            <button class="btn-delete" onclick="deleteTeacher(${t.id})">🗑️ حذف</button>
+                            <button class="btn-delete" onclick="deleteTeacher(${t.id})">🗑️ حذف<                            /button>
                         </div>
                     </div>
                 `;
@@ -634,13 +628,12 @@
         }
 
         // ==========================================
-        // ===== ٧. الإحصائيات =====
+        // ===== الجزء السادس: الإحصائيات =====
         // ==========================================
 
         function updateStats() {
             document.getElementById('totalTeachers').textContent = teachers.length;
 
-            
             const subjects = new Set(teachers.map(t => t.subject));
             document.getElementById('totalSubjects').textContent = subjects.size;
 
@@ -660,7 +653,7 @@
         }
 
         // ==========================================
-        // ===== ٨. إدارة المدرسين =====
+        // ===== الجزء السابع: إدارة المدرسين =====
         // ==========================================
 
         function showAddModal() {
@@ -770,7 +763,7 @@
         }
 
         // ==========================================
-        // ===== ٩. إدارة التقييمات =====
+        // ===== الجزء الثامن: إدارة التقييمات =====
         // ==========================================
 
         async function loadRatings() {
@@ -849,7 +842,7 @@
         }
 
         // ==========================================
-        // ===== ١٠. Toast =====
+        // ===== الجزء التاسع: Toast =====
         // ==========================================
 
         function showToast(message, type) {
@@ -864,7 +857,7 @@
         }
 
         // ==========================================
-        // ===== ١١. إغلاق المودال =====
+        // ===== الجزء العاشر: إغلاق المودال =====
         // ==========================================
 
         window.onclick = function(event) {
@@ -875,21 +868,6 @@
 
         console.log('🔐 لوحة التحكم - أنت المطور');
         console.log('📊 عدد المدرسين:', teachers.length);
-function login() {
-    var password = document.getElementById('adminPassword').value;
-    if (password === "php123") {
-        localStorage.setItem('adminLoggedIn', 'true');
-        document.getElementById('loginSection').style.display = 'none';
-        document.getElementById('dashboardSection').style.display = 'block';
-        loadTeachers();
-        loadRatings();
-    } else {
-        document.getElementById('errorMsg').style.display = 'block';
-        setTimeout(function() {
-            document.getElementById('errorMsg').style.display = 'none';
-        }, 3000);
-    }
-}
     </script>
 
 </body>
