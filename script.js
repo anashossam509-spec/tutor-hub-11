@@ -8,7 +8,7 @@ document.addEventListener('contextmenu', function(e) {
     alert('❌ هذه الميزة غير متاحة');
 });
 
-// منع F12 و Ctrl+Shift+I و Ctrl+U (عرض المصدر)
+// منع F12 و Ctrl+Shift+I و Ctrl+U
 document.addEventListener('keydown', function(e) {
     if (e.key === 'F12' || 
         (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
@@ -28,137 +28,84 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// ==========================================
-// ===== ٢. بيانات المدرسين =====
-// ==========================================
-
-const teachers = [
-    {
-        id: 1,
-        name: "أحمد محمد",
-        subject: "ماث",
-        stage: "ثانوي",
-        price: 150,
-        rating: 4.8,
-        totalRatings: 23,
-        phone: "201012345678",
-        description: "شرح ممتاز ومنهجية واضحة، بيساعد الطلاب يفكروا بطريقة منطقية"
-    },
-    {
-        id: 2,
-        name: "سارة علي",
-        subject: "عربي",
-        stage: "اعدادي",
-        price: 120,
-        rating: 4.9,
-        totalRatings: 31,
-        phone: "201098765432",
-        description: "أسلوب سلس وجذاب، بتحبب الطلاب في اللغة العربية"
-    },
-    {
-        id: 3,
-        name: "محمد خالد",
-        subject: "إنجليزي",
-        stage: "ثانوي",
-        price: 180,
-        rating: 4.7,
-        totalRatings: 18,
-        phone: "2010555666777",
-        description: "خبرة في التدريس لأكثر من ٥ سنوات، نطق ممتاز"
-    },
-    {
-        id: 4,
-        name: "نورا أحمد",
-        subject: "علوم",
-        stage: "ابتدائي",
-        price: 100,
-        rating: 4.6,
-        totalRatings: 15,
-        phone: "2010111222333",
-        description: "شرح مبسط وجميل، بتفهم الأطفال بسرعة"
-    },
-    {
-        id: 5,
-        name: "كريم يوسف",
-        subject: "فيزياء",
-        stage: "ثانوي",
-        price: 200,
-        rating: 4.9,
-        totalRatings: 27,
-        phone: "2010222333444",
-        description: "مدرس فيزياء محترف، بيشرح القوانين بطريقة سهلة"
-    },
-    {
-        id: 6,
-        name: "منى إبراهيم",
-        subject: "كيمياء",
-        stage: "ثانوي",
-        price: 190,
-        rating: 4.5,
-        totalRatings: 12,
-        phone: "2010333444555",
-        description: "شرح كيمياء بطريقة منظمة، بتساعد الطلاب يفهموا المعادلات"
-    },
-    {
-        id: 7,
-        name: "عمر حسن",
-        subject: "تاريخ",
-        stage: "اعدادي",
-        price: 110,
-        rating: 4.3,
-        totalRatings: 9,
-        phone: "2010444555666",
-        description: "أسلوب قصصي ممتع، بيساعد الطلاب يحفظوا الأحداث بسهولة"
-    },
-    {
-        id: 8,
-        name: "ليلى عبدالله",
-        subject: "جغرافيا",
-        stage: "اعدادي",
-        price: 110,
-        rating: 4.4,
-        totalRatings: 11,
-        phone: "2010555666777",
-        description: "شرح جغرافيا باستخدام الخرائط والصور، بيخلي المادة مسلية"
-    },
-    {
-        id: 9,
-        name: "مصطفى رجب",
-        subject: "ماث",
-        stage: "اعدادي",
-        price: 130,
-        rating: 4.2,
-        totalRatings: 14,
-        phone: "2010666777888",
-        description: "مدرس ماث ممتاز للمرحلة الإعدادية، بيركز على الأساسيات"
-    },
-    {
-        id: 10,
-        name: "هدى سمير",
-        subject: "إنجليزي",
-        stage: "ابتدائي",
-        price: 90,
-        rating: 4.7,
-        totalRatings: 22,
-        phone: "2010777888999",
-        description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية ولعب، بيحبوها"
+// منع Ctrl+S (حفظ الصفحة)
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+        e.preventDefault();
+        alert('❌ هذه الميزة غير متاحة');
+        return false;
     }
-];
+});
+
+// منع السحب
+document.ondragstart = function() {
+    return false;
+};
+
+// منع تحديد النصوص
+document.onselectstart = function() {
+    return false;
+};
 
 // ==========================================
-// ===== ٣. دوال العرض والفلترة =====
+// ===== ٢. بيانات المدرسين (من localStorage) =====
+// ==========================================
+
+let teachers = [];
+
+function loadTeachers() {
+    const saved = localStorage.getItem('adminTeachers');
+    if (saved) {
+        teachers = JSON.parse(saved);
+    } else {
+        // البيانات الافتراضية
+        teachers = [
+            {id: 1, name: "أحمد محمد", subject: "ماث", stage: "ثانوي", price: 150, phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23},
+            {id: 2, name: "سارة علي", subject: "عربي", stage: "اعدادي", price: 120, phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31},
+            {id: 3, name: "محمد خالد", subject: "إنجليزي", stage: "ثانوي", price: 180, phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18},
+            {id: 4, name: "نورا أحمد", subject: "علوم", stage: "ابتدائي", price: 100, phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15},
+            {id: 5, name: "كريم يوسف", subject: "فيزياء", stage: "ثانوي", price: 200, phone: "2010222333444", description: "مدرس فيزياء محترف", rating: 4.9, totalRatings: 27},
+            {id: 6, name: "منى إبراهيم", subject: "كيمياء", stage: "ثانوي", price: 190, phone: "2010333444555", description: "شرح كيمياء بطريقة منظمة", rating: 4.5, totalRatings: 12},
+            {id: 7, name: "عمر حسن", subject: "تاريخ", stage: "اعدادي", price: 110, phone: "2010444555666", description: "أسلوب قصصي ممتع", rating: 4.3, totalRatings: 9},
+            {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stage: "اعدادي", price: 110, phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط", rating: 4.4, totalRatings: 11},
+            {id: 9, name: "مصطفى رجب", subject: "ماث", stage: "اعدادي", price: 130, phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية", rating: 4.2, totalRatings: 14},
+            {id: 10, name: "هدى سمير", subject: "إنجليزي", stage: "ابتدائي", price: 90, phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22}
+        ];
+        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+    }
+    displayTeachers(teachers);
+}
+
+// ==========================================
+// ===== ٣. عرض المدرسين =====
 // ==========================================
 
 function displayTeachers(teachersList) {
     const container = document.getElementById('teachers-container');
     container.innerHTML = '';
 
-    if (teachersList.length === 0) {
-        container.innerHTML = '<div class="no-results">😕 لا يوجد مدرسين مطابقين للبحث</div>';
+    if (!teachersList || teachersList.length === 0) {
+        container.innerHTML = '<div class="no-results">😕 لا يوجد مدرسين حالياً</div>';
         return;
     }
 
+    // جلب التقييمات من localStorage
+    let ratings = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('rated_')) {
+            const teacherId = key.replace('rated_', '');
+            try {
+                ratings[teacherId] = JSON.parse(localStorage.getItem(key));
+            } catch {}
+        }
+    }
+
     teachersList.forEach(teacher => {
+        const teacherRating = ratings[teacher.id];
+        const displayRating = teacherRating ? teacherRating.rating : (teacher.rating || 0);
+        const displayTotal = teacherRating ? 1 : (teacher.totalRatings || 0);
+
         const card = `
             <div class="teacher-card">
                 <div class="avatar">${teacher.name.charAt(0)}</div>
@@ -171,13 +118,13 @@ function displayTeachers(teachersList) {
                 </div>
                 <div class="detail">
                     <span>⭐ التقييم</span>
-                    <span class="rating">${teacher.rating} (${teacher.totalRatings} تقييم)</span>
+                    <span class="rating">${displayRating} (${displayTotal} تقييم)</span>
                 </div>
                 <div class="detail" style="border-bottom: none;">
                     <span>📱 واتساب</span>
                     <span class="phone">${teacher.phone}</span>
                 </div>
-                <p style="font-size:0.9rem;color:#7f8c8d;margin:10px 0;text-align:right;">📝 ${teacher.description}</p>
+                <p style="font-size:0.9rem;color:#7f8c8d;margin:10px 0;text-align:right;">📝 ${teacher.description || ''}</p>
                 <a href="https://wa.me/${teacher.phone}?text=السلام%20عليكم%20أستاذ%20${encodeURIComponent(teacher.name)}،%20أنا%20جيت%20من%20منصة%20Teachers%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" 
                    class="whatsapp-btn" target="_blank">
                     📱 تواصل مع المدرس
@@ -190,6 +137,10 @@ function displayTeachers(teachersList) {
         container.innerHTML += card;
     });
 }
+
+// ==========================================
+// ===== ٤. فلتر البحث =====
+// ==========================================
 
 function filterTeachers() {
     const searchText = document.getElementById('searchInput').value.toLowerCase();
@@ -208,92 +159,14 @@ function filterTeachers() {
 }
 
 // ==========================================
-// ===== ٤. نظام التقييم (مع الحماية) =====
+// ===== ٥. نظام التقييم (مرة واحدة لكل جهاز) =====
 // ==========================================
 
 function rateTeacher(teacherId) {
     const teacher = teachers.find(t => t.id === teacherId);
     if (!teacher) return;
 
-    // 🛡️ التحقق: هل قيم المدرس ده قبل كده؟
-    const existingRating = localStorage.getItem(`rated_${teacherId}`);
-    if (existingRating) {
-        try {
-            const data = JSON.parse(existingRating);
-            alert(`❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!\n📅 التاريخ: ${new Date(data.date).toLocaleString()}\n⭐ التقييم: ${data.rating} من ٥`);
-        } catch {
-            alert(`❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!`);
-        }
-        return;
-    }
-
-    const rating = prompt(
-        `⭐ قيم المدرس ${teacher.name}\n` +
-        `(١ = سيء جداً، ٢ = سيء، ٣ = متوسط، ٤ = جيد، ٥ = ممتاز)\n` +
-        `أدخل رقم من ١ إلى ٥:`
-    );
-
-    if (rating === null) return; // المستخدم ألغى
-
-    const ratingNum = parseInt(rating);
-    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
-        alert('❌ يرجى إدخال رقم صحيح بين ١ و ٥');
-        return;
-    }
-
-    // حساب التقييم الجديد
-    const newRating = (teacher.rating * teacher.totalRatings + ratingNum) / (teacher.totalRatings + 1);
-    teacher.rating = Math.round(newRating * 10) / 10;
-    teacher.totalRatings += 1;
-
-    // 🛡️ حفظ أن الطالب قيم المدرس
-    localStorage.setItem(`rated_${teacherId}`, JSON.stringify({
-        rating: ratingNum,
-        date: new Date().toISOString()
-    }));
-
-    alert(`✅ شكراً لتقييمك!\nالتقييم الجديد للمدرس ${teacher.name}: ${teacher.rating} من ٥`);
-
-    displayTeachers(teachers);
-}
-
-// ==========================================
-// ===== ٥. تحميل الصفحة =====
-// ==========================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    displayTeachers(teachers);
-});
-
-// ==========================================
-// ===== ٦. التحقق الدوري من الحماية =====
-// ==========================================
-
-// كشف محاولة فتح أدوات المطور
-let devtoolsOpen = false;
-const element = new Image();
-Object.defineProperty(element, 'id', {
-    get: function() {
-        devtoolsOpen = true;
-        alert('⚠️ تم اكتشاف محاولة استخدام أدوات المطور!');
-    }
-});
-requestAnimationFrame(function check() {
-    if (devtoolsOpen) {
-        // إجراء إضافي (مثل إعادة التحميل)
-        // window.location.reload();
-    }
-    requestAnimationFrame(check);
-});
-// ==========================================
-// ===== نظام التقييم (مرة واحدة لكل جهاز) =====
-// ==========================================
-
-function rateTeacher(teacherId) {
-    const teacher = teachers.find(t => t.id === teacherId);
-    if (!teacher) return;
-
-    // 🛡️ التحقق: هل قيم المدرس ده قبل كده؟
+    // التحقق: هل قيم المدرس ده قبل كده؟
     const existingRating = localStorage.getItem(`rated_${teacherId}`);
     if (existingRating) {
         try {
@@ -322,7 +195,7 @@ function rateTeacher(teacherId) {
         `أدخل رقم من ١ إلى ٥:`
     );
 
-    if (rating === null) return; // المستخدم ألغى
+    if (rating === null) return;
 
     const ratingNum = parseInt(rating);
     if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
@@ -335,31 +208,48 @@ function rateTeacher(teacherId) {
     teacher.rating = Math.round(newRating * 10) / 10;
     teacher.totalRatings += 1;
 
-    // 🛡️ حفظ التقييم مع التاريخ
+    // حفظ التقييم في localStorage
     localStorage.setItem(`rated_${teacherId}`, JSON.stringify({
         rating: ratingNum,
         date: new Date().toISOString()
     }));
 
+    // تحديث تقييم المدرس في adminTeachers
+    const savedTeachers = JSON.parse(localStorage.getItem('adminTeachers') || '[]');
+    const index = savedTeachers.findIndex(t => t.id === teacherId);
+    if (index !== -1) {
+        savedTeachers[index].rating = teacher.rating;
+        savedTeachers[index].totalRatings = teacher.totalRatings;
+        localStorage.setItem('adminTeachers', JSON.stringify(savedTeachers));
+    }
+
     alert(`✅ شكراً لتقييمك!\nالتقييم الجديد للمدرس ${teacher.name}: ${teacher.rating} من ٥`);
 
     displayTeachers(teachers);
+}
 
 // ==========================================
-// ===== لوحة التحكم (بكلمة مرور) =====
+// ===== ٦. لوحة التحكم =====
 // ==========================================
 
 function showAdminPanel() {
     const password = prompt("🔐 أدخل كلمة المرور للوصول إلى لوحة التحكم:");
-    if (password === null) return; // المستخدم ألغى
+    if (password === null) return;
 
     if (password === "anas2026") {
-        // فتح لوحة التحكم في صفحة جديدة
         window.location.href = 'admin.html';
     } else {
         alert('❌ كلمة المرور غير صحيحة!');
     }
 }
+
+// ==========================================
+// ===== ٧. تحميل الصفحة =====
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadTeachers();
+});
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
