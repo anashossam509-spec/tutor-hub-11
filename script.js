@@ -1,4 +1,3 @@
-
 // ==========================================
 // ===== ١. منع التلاعب (الحماية) =====
 // ==========================================
@@ -56,7 +55,6 @@ console.log('✅ JSON Bin connected successfully');
 // ===== ٣. دوال JSON Bin =====
 // ==========================================
 
-// قراءة التقييمات من JSON Bin
 async function getRatings() {
     try {
         const res = await fetch(JSONBIN_URL, {
@@ -70,7 +68,6 @@ async function getRatings() {
     }
 }
 
-// كتابة التقييمات في JSON Bin
 async function saveRatings(ratings) {
     try {
         await fetch(JSONBIN_URL, {
@@ -86,7 +83,6 @@ async function saveRatings(ratings) {
     }
 }
 
-// قراءة المدرسين من JSON Bin
 async function getTeachersFromCloud() {
     try {
         const res = await fetch(JSONBIN_URL, {
@@ -100,7 +96,6 @@ async function getTeachersFromCloud() {
     }
 }
 
-// كتابة المدرسين في JSON Bin
 async function saveTeachersToCloud(teachersData) {
     try {
         const res = await fetch(JSONBIN_URL, {
@@ -130,14 +125,12 @@ async function saveTeachersToCloud(teachersData) {
 let teachers = [];
 
 async function loadTeachers() {
-    // جلب من السحابة فقط
     const cloudTeachers = await getTeachersFromCloud();
     
     if (cloudTeachers && cloudTeachers.length > 0) {
         teachers = cloudTeachers;
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
     } else {
-        // لو مفيش مدرسين في السحابة، نبدأ بمصفوفة فارغة
         teachers = [];
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
         await saveTeachersToCloud(teachers);
@@ -174,22 +167,7 @@ function displayTeachers(teachersList) {
         const stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : '';
 
         const videoButton = teacher.video ? `
-            <a href="${teacher.video}" target="_blank" class="video-btn" style="
-                display: inline-block;
-                background: #ff0000;
-                color: white;
-                padding: 8px 15px;
-                border-radius: 30px;
-                text-decoration: none;
-                font-weight: bold;
-                margin-top: 8px;
-                width: 100%;
-                text-align: center;
-                transition: 0.3s;
-                border: none;
-                cursor: pointer;
-                font-size: 0.95rem;
-            ">
+            <a href="${teacher.video}" target="_blank" class="video-btn">
                 🎬 فيديو تعريفي عن المدرس
             </a>
         ` : '';
@@ -233,12 +211,14 @@ function displayTeachers(teachersList) {
 // ==========================================
 
 function filterTeachers() {
-    const searchText = document.getElementById('searchInput').value.toLowerCase();
+    const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
     const stageFilter = document.getElementById('stageFilter').value;
     const subjectFilter = document.getElementById('subjectFilter').value;
 
     const filtered = teachers.filter(teacher => {
-        const matchSearch = teacher.name.includes(searchText) || teacher.subject.includes(searchText);
+        // البحث بالاسم أو المادة
+        const matchSearch = teacher.name.toLowerCase().includes(searchText) || 
+                           teacher.subject.toLowerCase().includes(searchText);
         const matchStage = stageFilter === 'all' || (teacher.stages && teacher.stages.includes(stageFilter));
         const matchSubject = subjectFilter === 'all' || teacher.subject === subjectFilter;
 
@@ -272,10 +252,8 @@ async function rateTeacher(teacherId) {
         localStorage.setItem('userPhone', userPhone);
     }
 
-    // جلب التقييمات من JSON Bin
     const ratings = await getRatings();
     
-    // التحقق: هل قيم المدرس ده قبل كده؟
     if (ratings[teacherId] && ratings[teacherId][userPhone]) {
         const data = ratings[teacherId][userPhone];
         const date = new Date(data.date).toLocaleString('ar-EG', {
@@ -307,7 +285,6 @@ async function rateTeacher(teacherId) {
         return;
     }
 
-    // حفظ التقييم
     if (!ratings[teacherId]) ratings[teacherId] = {};
     ratings[teacherId][userPhone] = {
         rating: ratingNum,
@@ -316,7 +293,6 @@ async function rateTeacher(teacherId) {
 
     await saveRatings(ratings);
 
-    // حساب متوسط التقييم
     const values = Object.values(ratings[teacherId]).map(r => r.rating);
     const avg = values.reduce((a, b) => a + b, 0) / values.length;
     const total = values.length;
@@ -380,4 +356,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
-```
