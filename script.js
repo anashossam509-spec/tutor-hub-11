@@ -42,7 +42,47 @@ document.onselectstart = function() {
 };
 
 // ==========================================
-// ===== ٢. بيانات المدرسين =====
+// ===== ٢. تهيئة JSON Bin =====
+// ==========================================
+
+const JSONBIN_BIN_ID = '67b3310dacd3cb34a8e66cbf';
+const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
+const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+
+console.log('✅ JSON Bin connected successfully');
+
+// قراءة التقييمات من JSON Bin
+async function getRatings() {
+    try {
+        const res = await fetch(JSONBIN_URL, {
+            headers: { 'X-Master-Key': JSONBIN_API_KEY }
+        });
+        const data = await res.json();
+        return data.record.ratings || {};
+    } catch (error) {
+        console.error('Error reading ratings:', error);
+        return {};
+    }
+}
+
+// كتابة التقييمات في JSON Bin
+async function saveRatings(ratings) {
+    try {
+        await fetch(JSONBIN_URL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_API_KEY
+            },
+            body: JSON.stringify({ ratings })
+        });
+    } catch (error) {
+        console.error('Error saving ratings:', error);
+    }
+}
+
+// ==========================================
+// ===== ٣. بيانات المدرسين =====
 // ==========================================
 
 let teachers = [];
@@ -53,7 +93,7 @@ function loadTeachers() {
         teachers = JSON.parse(saved);
     } else {
         teachers = [
-            {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23, video: "https://youtu.be/dQw4w9WgXcQ"},
+            {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23, video: ""},
             {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31, video: ""},
             {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18, video: ""},
             {id: 4, name: "نورا أحمد", subject: "علوم", stages: ["ابتدائي", "اعدادي"], phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15, video: ""},
@@ -74,7 +114,7 @@ function loadTeachers() {
 }
 
 // ==========================================
-// ===== ٣. عرض المدرسين =====
+// ===== ٤. عرض المدرسين =====
 // ==========================================
 
 function displayTeachers(teachersList) {
@@ -92,21 +132,7 @@ function displayTeachers(teachersList) {
         return;
     }
 
-    let ratings = {};
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('rated_')) {
-            const teacherId = key.replace('rated_', '');
-            try {
-                ratings[teacherId] = JSON.parse(localStorage.getItem(key));
-            } catch {}
-        }
-    }
-
     sorted.forEach(teacher => {
-        const teacherRating = ratings[teacher.id];
-        const displayRating = teacherRating ? teacherRating.rating : (teacher.rating || 0);
-        const displayTotal = teacherRating ? 1 : (teacher.totalRatings || 0);
         const stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : '';
 
         const videoButton = teacher.video ? `
@@ -138,7 +164,7 @@ function displayTeachers(teachersList) {
                 <div class="stage-badge">📌 ${stagesDisplay}</div>
                 <div class="detail">
                     <span>⭐ التقييم</span>
-                    <span class="rating">${displayRating} (${displayTotal} تقييم)</span>
+                    <span class="rating">${teacher.rating || 0} (${teacher.totalRatings || 0} تقييم)</span>
                 </div>
                 <div class="detail" style="border-bottom: none;">
                     <span>📱 واتساب</span>
@@ -165,7 +191,7 @@ function displayTeachers(teachersList) {
 }
 
 // ==========================================
-// ===== ٤. فلتر البحث =====
+// ===== ٥. فلتر البحث =====
 // ==========================================
 
 function filterTeachers() {
@@ -191,32 +217,41 @@ function filterTeachers() {
 }
 
 // ==========================================
-// ===== ٥. نظام التقييم =====
+// ===== ٦. نظام التقييم =====
 // ==========================================
 
-function rateTeacher(teacherId) {
+async function rateTeacher(teacherId) {
     const teacher = teachers.find(t => t.id === teacherId);
     if (!teacher) return;
 
-    const existingRating = localStorage.getItem(`rated_${teacherId}`);
-    if (existingRating) {
-        try {
-            const data = JSON.parse(existingRating);
-            const date = new Date(data.date).toLocaleString('ar-EG', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            alert(
-                `❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!\n` +
-                `📅 التاريخ: ${date}\n` +
-                `⭐ التقييم: ${data.rating} من ٥`
-            );
-        } catch {
-            alert(`❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!`);
+    let userPhone = localStorage.getItem('userPhone');
+    if (!userPhone) {
+        userPhone = prompt("📱 أدخل رقم واتسابك (مثال: 201012345678) لتقييم المدرس:");
+        if (!userPhone) {
+            alert('❌ رقم واتساب مطلوب للتقييم');
+            return;
         }
+        localStorage.setItem('userPhone', userPhone);
+    }
+
+    // جلب التقييمات من JSON Bin
+    const ratings = await getRatings();
+    
+    // التحقق: هل قيم المدرس ده قبل كده؟
+    if (ratings[teacherId] && ratings[teacherId][userPhone]) {
+        const data = ratings[teacherId][userPhone];
+        const date = new Date(data.date).toLocaleString('ar-EG', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        alert(
+            `❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!\n` +
+            `📅 التاريخ: ${date}\n` +
+            `⭐ التقييم: ${data.rating} من ٥`
+        );
         return;
     }
 
@@ -234,30 +269,35 @@ function rateTeacher(teacherId) {
         return;
     }
 
-    const newRating = (teacher.rating * teacher.totalRatings + ratingNum) / (teacher.totalRatings + 1);
-    teacher.rating = Math.round(newRating * 10) / 10;
-    teacher.totalRatings += 1;
-
-    localStorage.setItem(`rated_${teacherId}`, JSON.stringify({
+    // حفظ التقييم
+    if (!ratings[teacherId]) ratings[teacherId] = {};
+    ratings[teacherId][userPhone] = {
         rating: ratingNum,
         date: new Date().toISOString()
-    }));
+    };
+
+    await saveRatings(ratings);
+
+    // حساب متوسط التقييم
+    const values = Object.values(ratings[teacherId]).map(r => r.rating);
+    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+    const total = values.length;
 
     const savedTeachers = JSON.parse(localStorage.getItem('adminTeachers') || '[]');
     const index = savedTeachers.findIndex(t => t.id === teacherId);
     if (index !== -1) {
-        savedTeachers[index].rating = teacher.rating;
-        savedTeachers[index].totalRatings = teacher.totalRatings;
+        savedTeachers[index].rating = Math.round(avg * 10) / 10;
+        savedTeachers[index].totalRatings = total;
         localStorage.setItem('adminTeachers', JSON.stringify(savedTeachers));
+        teachers = savedTeachers;
     }
 
-    alert(`✅ شكراً لتقييمك!\nالتقييم الجديد للمدرس ${teacher.name}: ${teacher.rating} من ٥`);
-
+    alert(`✅ شكراً لتقييمك!`);
     displayTeachers(teachers);
 }
 
 // ==========================================
-// ===== ٦. مشاركة المنصة =====
+// ===== ٧. مشاركة المنصة =====
 // ==========================================
 
 function sharePlatform(teacherId) {
@@ -277,7 +317,7 @@ function sharePlatform(teacherId) {
 }
 
 // ==========================================
-// ===== ٧. لوحة التحكم =====
+// ===== ٨. لوحة التحكم =====
 // ==========================================
 
 function showAdminPanel() {
@@ -292,7 +332,7 @@ function showAdminPanel() {
 }
 
 // ==========================================
-// ===== ٨. تحميل الصفحة =====
+// ===== ٩. تحميل الصفحة =====
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', function() {
