@@ -51,6 +51,10 @@ const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
 console.log('✅ JSON Bin connected successfully');
 
+// ==========================================
+// ===== ٣. دوال JSON Bin =====
+// ==========================================
+
 // قراءة التقييمات من JSON Bin
 async function getRatings() {
     try {
@@ -81,17 +85,61 @@ async function saveRatings(ratings) {
     }
 }
 
+// قراءة المدرسين من JSON Bin
+async function getTeachersFromCloud() {
+    try {
+        const res = await fetch(JSONBIN_URL, {
+            headers: { 'X-Master-Key': JSONBIN_API_KEY }
+        });
+        const data = await res.json();
+        return data.record.teachers || [];
+    } catch (error) {
+        console.error('Error reading teachers:', error);
+        return [];
+    }
+}
+
+// كتابة المدرسين في JSON Bin
+async function saveTeachersToCloud(teachersData) {
+    try {
+        // جلب البيانات الحالية
+        const res = await fetch(JSONBIN_URL, {
+            headers: { 'X-Master-Key': JSONBIN_API_KEY }
+        });
+        const data = await res.json();
+        
+        // تحديث جزء teachers فقط
+        const currentData = data.record || {};
+        currentData.teachers = teachersData;
+        
+        await fetch(JSONBIN_URL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_API_KEY
+            },
+            body: JSON.stringify(currentData)
+        });
+    } catch (error) {
+        console.error('Error saving teachers:', error);
+    }
+}
+
 // ==========================================
-// ===== ٣. بيانات المدرسين =====
+// ===== ٤. بيانات المدرسين =====
 // ==========================================
 
 let teachers = [];
 
-function loadTeachers() {
-    const saved = localStorage.getItem('adminTeachers');
-    if (saved) {
-        teachers = JSON.parse(saved);
+async function loadTeachers() {
+    // محاولة جلب المدرسين من JSON Bin
+    const cloudTeachers = await getTeachersFromCloud();
+    
+    if (cloudTeachers && cloudTeachers.length > 0) {
+        teachers = cloudTeachers;
+        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
     } else {
+        // البيانات الافتراضية (لو مفيش حاجة في السحابة)
         teachers = [
             {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23, video: ""},
             {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31, video: ""},
@@ -109,12 +157,14 @@ function loadTeachers() {
             {id: 14, name: "شيماء أحمد", subject: "برمجه", stages: ["ثانوي"], phone: "2010111122233", description: "مبرمجة محترفة، تدرس Python و JavaScript", rating: 4.9, totalRatings: 15, video: ""}
         ];
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+        // حفظ المدرسين في JSON Bin
+        await saveTeachersToCloud(teachers);
     }
     displayTeachers(teachers);
 }
 
 // ==========================================
-// ===== ٤. عرض المدرسين =====
+// ===== ٥. عرض المدرسين =====
 // ==========================================
 
 function displayTeachers(teachersList) {
@@ -191,7 +241,7 @@ function displayTeachers(teachersList) {
 }
 
 // ==========================================
-// ===== ٥. فلتر البحث =====
+// ===== ٦. فلتر البحث =====
 // ==========================================
 
 function filterTeachers() {
@@ -217,7 +267,7 @@ function filterTeachers() {
 }
 
 // ==========================================
-// ===== ٦. نظام التقييم =====
+// ===== ٧. نظام التقييم =====
 // ==========================================
 
 async function rateTeacher(teacherId) {
@@ -290,6 +340,8 @@ async function rateTeacher(teacherId) {
         savedTeachers[index].totalRatings = total;
         localStorage.setItem('adminTeachers', JSON.stringify(savedTeachers));
         teachers = savedTeachers;
+        // حفظ التحديث في JSON Bin
+        await saveTeachersToCloud(teachers);
     }
 
     alert(`✅ شكراً لتقييمك!`);
@@ -297,7 +349,7 @@ async function rateTeacher(teacherId) {
 }
 
 // ==========================================
-// ===== ٧. مشاركة المنصة =====
+// ===== ٨. مشاركة المنصة =====
 // ==========================================
 
 function sharePlatform(teacherId) {
@@ -317,7 +369,7 @@ function sharePlatform(teacherId) {
 }
 
 // ==========================================
-// ===== ٨. لوحة التحكم =====
+// ===== ٩. لوحة التحكم =====
 // ==========================================
 
 function showAdminPanel() {
@@ -332,7 +384,7 @@ function showAdminPanel() {
 }
 
 // ==========================================
-// ===== ٩. تحميل الصفحة =====
+// ===== ١٠. تحميل الصفحة =====
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', function() {
