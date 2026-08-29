@@ -109,8 +109,24 @@ function displayTeachers(teachersList) {
         const displayTotal = teacherRating ? 1 : (teacher.totalRatings || 0);
         const stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : '';
 
+        // ===== زر الفيديو =====
         const videoButton = teacher.video ? `
-            <a href="${teacher.video}" target="_blank" class="video-btn">
+            <a href="${teacher.video}" target="_blank" class="video-btn" style="
+                display: inline-block;
+                background: #ff0000;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 30px;
+                text-decoration: none;
+                font-weight: bold;
+                margin-top: 8px;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                border: none;
+                cursor: pointer;
+                font-size: 0.95rem;
+            ">
                 🎬 فيديو تعريفي عن المدرس
             </a>
         ` : '';
