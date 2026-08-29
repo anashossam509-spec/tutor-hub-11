@@ -236,7 +236,7 @@ function showAdminPanel() {
     const password = prompt("🔐 أدخل كلمة المرور للوصول إلى لوحة التحكم:");
     if (password === null) return;
 
-    if (password === "anas2026") {
+    if (password === "power32") {
         window.location.href = 'admin.html';
     } else {
         alert('❌ كلمة المرور غير صحيحة!');
