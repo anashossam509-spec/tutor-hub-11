@@ -359,6 +359,7 @@
 </head>
 <body>
 
+    <!-- ===== صفحة الدخول ===== -->
     <div id="loginSection" class="login-box">
         <h1>🔐 لوحة التحكم</h1>
         <p>أدخل كلمة المرور للوصول</p>
@@ -367,6 +368,7 @@
         <div class="error" id="errorMsg">❌ كلمة المرور غير صحيحة</div>
     </div>
 
+    <!-- ===== لوحة التحكم ===== -->
     <div id="dashboardSection" class="dashboard-container">
         <div class="dashboard-header">
             <h1>📊 لوحة التحكم</h1>
@@ -413,6 +415,7 @@
         </div>
     </div>
 
+    <!-- ===== مودال إضافة/تعديل مدرس ===== -->
     <div id="teacherModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">➕ إضافة مدرس جديد</h2>
@@ -520,12 +523,6 @@
         // ===== ٤. نظام الدخول =====
         // ==========================================
 
-        document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('adminLoggedIn') === 'true') {
-                showDashboard();
-            }
-        });
-
         function login() {
             const password = document.getElementById('adminPassword').value;
             const error = document.getElementById('errorMsg');
@@ -538,6 +535,12 @@
                 setTimeout(() => error.style.display = 'none', 3000);
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                showDashboard();
+            }
+        });
 
         async function showDashboard() {
             document.getElementById('loginSection').style.display = 'none';
@@ -623,8 +626,8 @@
         function updateStats() {
             document.getElementById('totalTeachers').textContent = teachers.length;
 
+            ```javascript
             const subjects = new Set(teachers.map(t => t.subject));
-                  ```javascript
             document.getElementById('totalSubjects').textContent = subjects.size;
 
             if (teachers.length > 0) {
@@ -862,6 +865,3 @@
 
 </body>
 </html>
-
-
-    
