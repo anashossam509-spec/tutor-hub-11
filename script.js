@@ -1,5 +1,35 @@
 // ==========================================
-// ===== بيانات المدرسين =====
+// ===== ١. منع التلاعب (الحماية) =====
+// ==========================================
+
+// منع الكليك الأيمن
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    alert('❌ هذه الميزة غير متاحة');
+});
+
+// منع F12 و Ctrl+Shift+I و Ctrl+U (عرض المصدر)
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
+        (e.ctrlKey && (e.key === 'U' || e.key === 'u'))) {
+        e.preventDefault();
+        alert('❌ هذه الميزة غير متاحة');
+        return false;
+    }
+});
+
+// منع Ctrl+Shift+J (Console)
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+        e.preventDefault();
+        alert('❌ هذه الميزة غير متاحة');
+        return false;
+    }
+});
+
+// ==========================================
+// ===== ٢. بيانات المدرسين =====
 // ==========================================
 
 const teachers = [
@@ -11,7 +41,7 @@ const teachers = [
         price: 150,
         rating: 4.8,
         totalRatings: 23,
-        phone: "01019915833", // رقم أحمد محمد
+        phone: "201012345678",
         description: "شرح ممتاز ومنهجية واضحة، بيساعد الطلاب يفكروا بطريقة منطقية"
     },
     {
@@ -22,7 +52,7 @@ const teachers = [
         price: 120,
         rating: 4.9,
         totalRatings: 31,
-        phone: "201098765432", // رقم سارة علي
+        phone: "201098765432",
         description: "أسلوب سلس وجذاب، بتحبب الطلاب في اللغة العربية"
     },
     {
@@ -33,7 +63,7 @@ const teachers = [
         price: 180,
         rating: 4.7,
         totalRatings: 18,
-        phone: "2010555666777", // رقم محمد خالد
+        phone: "2010555666777",
         description: "خبرة في التدريس لأكثر من ٥ سنوات، نطق ممتاز"
     },
     {
@@ -44,7 +74,7 @@ const teachers = [
         price: 100,
         rating: 4.6,
         totalRatings: 15,
-        phone: "2010111222333", // رقم نورا أحمد
+        phone: "2010111222333",
         description: "شرح مبسط وجميل، بتفهم الأطفال بسرعة"
     },
     {
@@ -55,7 +85,7 @@ const teachers = [
         price: 200,
         rating: 4.9,
         totalRatings: 27,
-        phone: "2010222333444", // رقم كريم يوسف
+        phone: "2010222333444",
         description: "مدرس فيزياء محترف، بيشرح القوانين بطريقة سهلة"
     },
     {
@@ -66,7 +96,7 @@ const teachers = [
         price: 190,
         rating: 4.5,
         totalRatings: 12,
-        phone: "2010333444555", // رقم منى إبراهيم
+        phone: "2010333444555",
         description: "شرح كيمياء بطريقة منظمة، بتساعد الطلاب يفهموا المعادلات"
     },
     {
@@ -77,7 +107,7 @@ const teachers = [
         price: 110,
         rating: 4.3,
         totalRatings: 9,
-        phone: "2010444555666", // رقم عمر حسن
+        phone: "2010444555666",
         description: "أسلوب قصصي ممتع، بيساعد الطلاب يحفظوا الأحداث بسهولة"
     },
     {
@@ -88,7 +118,7 @@ const teachers = [
         price: 110,
         rating: 4.4,
         totalRatings: 11,
-        phone: "2010555666777", // رقم ليلى عبدالله
+        phone: "2010555666777",
         description: "شرح جغرافيا باستخدام الخرائط والصور، بيخلي المادة مسلية"
     },
     {
@@ -99,7 +129,7 @@ const teachers = [
         price: 130,
         rating: 4.2,
         totalRatings: 14,
-        phone: "2010666777888", // رقم مصطفى رجب
+        phone: "2010666777888",
         description: "مدرس ماث ممتاز للمرحلة الإعدادية، بيركز على الأساسيات"
     },
     {
@@ -110,13 +140,13 @@ const teachers = [
         price: 90,
         rating: 4.7,
         totalRatings: 22,
-        phone: "2010777888999", // رقم هدى سمير
+        phone: "2010777888999",
         description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية ولعب، بيحبوها"
     }
 ];
 
 // ==========================================
-// ===== دوال العرض والفلترة =====
+// ===== ٣. دوال العرض والفلترة =====
 // ==========================================
 
 function displayTeachers(teachersList) {
@@ -178,12 +208,24 @@ function filterTeachers() {
 }
 
 // ==========================================
-// ===== نظام التقييم =====
+// ===== ٤. نظام التقييم (مع الحماية) =====
 // ==========================================
 
 function rateTeacher(teacherId) {
     const teacher = teachers.find(t => t.id === teacherId);
     if (!teacher) return;
+
+    // 🛡️ التحقق: هل قيم المدرس ده قبل كده؟
+    const existingRating = localStorage.getItem(`rated_${teacherId}`);
+    if (existingRating) {
+        try {
+            const data = JSON.parse(existingRating);
+            alert(`❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!\n📅 التاريخ: ${new Date(data.date).toLocaleString()}\n⭐ التقييم: ${data.rating} من ٥`);
+        } catch {
+            alert(`❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!`);
+        }
+        return;
+    }
 
     const rating = prompt(
         `⭐ قيم المدرس ${teacher.name}\n` +
@@ -191,7 +233,7 @@ function rateTeacher(teacherId) {
         `أدخل رقم من ١ إلى ٥:`
     );
 
-    if (rating === null) return;
+    if (rating === null) return; // المستخدم ألغى
 
     const ratingNum = parseInt(rating);
     if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
@@ -199,9 +241,16 @@ function rateTeacher(teacherId) {
         return;
     }
 
+    // حساب التقييم الجديد
     const newRating = (teacher.rating * teacher.totalRatings + ratingNum) / (teacher.totalRatings + 1);
     teacher.rating = Math.round(newRating * 10) / 10;
     teacher.totalRatings += 1;
+
+    // 🛡️ حفظ أن الطالب قيم المدرس
+    localStorage.setItem(`rated_${teacherId}`, JSON.stringify({
+        rating: ratingNum,
+        date: new Date().toISOString()
+    }));
 
     alert(`✅ شكراً لتقييمك!\nالتقييم الجديد للمدرس ${teacher.name}: ${teacher.rating} من ٥`);
 
@@ -209,9 +258,33 @@ function rateTeacher(teacherId) {
 }
 
 // ==========================================
-// ===== تحميل الصفحة =====
+// ===== ٥. تحميل الصفحة =====
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
     displayTeachers(teachers);
 });
+
+// ==========================================
+// ===== ٦. التحقق الدوري من الحماية =====
+// ==========================================
+
+// كشف محاولة فتح أدوات المطور
+let devtoolsOpen = false;
+const element = new Image();
+Object.defineProperty(element, 'id', {
+    get: function() {
+        devtoolsOpen = true;
+        alert('⚠️ تم اكتشاف محاولة استخدام أدوات المطور!');
+    }
+});
+requestAnimationFrame(function check() {
+    if (devtoolsOpen) {
+        // إجراء إضافي (مثل إعادة التحميل)
+        // window.location.reload();
+    }
+    requestAnimationFrame(check);
+});
+
+console.log('🛡️ نظام الحماية مفعل بنجاح');
+console.log('📊 عدد المدرسين:', teachers.length);
