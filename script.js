@@ -348,3 +348,21 @@ function rateTeacher(teacherId) {
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
+// ==========================================
+// ===== لوحة التحكم (بكلمة مرور) =====
+// ==========================================
+
+function showAdminPanel() {
+    const password = prompt("🔐 أدخل كلمة المرور للوصول إلى لوحة التحكم:");
+    if (password === null) return; // المستخدم ألغى
+
+    if (password === "anas2026") {
+        // فتح لوحة التحكم في صفحة جديدة
+        window.location.href = 'admin.html';
+    } else {
+        alert('❌ كلمة المرور غير صحيحة!');
+    }
+}
+
+console.log('🛡️ نظام الحماية مفعل بنجاح');
+console.log('📊 عدد المدرسين:', teachers.length);
