@@ -285,6 +285,66 @@ requestAnimationFrame(function check() {
     }
     requestAnimationFrame(check);
 });
+// ==========================================
+// ===== نظام التقييم (مرة واحدة لكل جهاز) =====
+// ==========================================
+
+function rateTeacher(teacherId) {
+    const teacher = teachers.find(t => t.id === teacherId);
+    if (!teacher) return;
+
+    // 🛡️ التحقق: هل قيم المدرس ده قبل كده؟
+    const existingRating = localStorage.getItem(`rated_${teacherId}`);
+    if (existingRating) {
+        try {
+            const data = JSON.parse(existingRating);
+            const date = new Date(data.date).toLocaleString('ar-EG', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            alert(
+                `❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!\n` +
+                `📅 التاريخ: ${date}\n` +
+                `⭐ التقييم: ${data.rating} من ٥`
+            );
+        } catch {
+            alert(`❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!`);
+        }
+        return;
+    }
+
+    const rating = prompt(
+        `⭐ قيم المدرس ${teacher.name}\n` +
+        `(١ = سيء جداً، ٢ = سيء، ٣ = متوسط، ٤ = جيد، ٥ = ممتاز)\n` +
+        `أدخل رقم من ١ إلى ٥:`
+    );
+
+    if (rating === null) return; // المستخدم ألغى
+
+    const ratingNum = parseInt(rating);
+    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+        alert('❌ يرجى إدخال رقم صحيح بين ١ و ٥');
+        return;
+    }
+
+    // حساب التقييم الجديد
+    const newRating = (teacher.rating * teacher.totalRatings + ratingNum) / (teacher.totalRatings + 1);
+    teacher.rating = Math.round(newRating * 10) / 10;
+    teacher.totalRatings += 1;
+
+    // 🛡️ حفظ التقييم مع التاريخ
+    localStorage.setItem(`rated_${teacherId}`, JSON.stringify({
+        rating: ratingNum,
+        date: new Date().toISOString()
+    }));
+
+    alert(`✅ شكراً لتقييمك!\nالتقييم الجديد للمدرس ${teacher.name}: ${teacher.rating} من ٥`);
+
+    displayTeachers(teachers);
+}
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
