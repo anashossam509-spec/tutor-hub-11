@@ -132,9 +132,6 @@ function displayTeachers(teachersList) {
     }
 
     teachersList.forEach(teacher => {
-        // تحويل التقييم لنجوم
-        const stars = '⭐'.repeat(Math.floor(teacher.rating)) + (teacher.rating % 1 >= 0.5 ? '⭐' : '');
-        
         const card = `
             <div class="teacher-card">
                 <div class="avatar">${teacher.name.charAt(0)}</div>
@@ -158,7 +155,7 @@ function displayTeachers(teachersList) {
                     <span class="phone">${MY_PHONE}</span>
                 </div>
                 <p style="font-size:0.9rem;color:#7f8c8d;margin:10px 0;text-align:right;">📝 ${teacher.description}</p>
-                <a href="https://wa.me/${MY_PHONE}?text=السلام%20عليكم%20أستاذ%20${encodeURIComponent(teacher.name)}،%20أنا%20جيت%20من%20منصة%20مدرسين%20أكسلنت%20وأريد%20الاستفسار%20عن%20الدروس" 
+                <a href="https://wa.me/${MY_PHONE}?text=السلام%20عليكم%20أستاذ%20${encodeURIComponent(teacher.name)}،%20أنا%20جيت%20من%20منصة%20Teachers%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" 
                    class="whatsapp-btn" target="_blank">
                     📱 تواصل مع المدرس
                 </a>
@@ -176,25 +173,17 @@ function filterTeachers() {
     const stageFilter = document.getElementById('stageFilter').value;
     const subjectFilter = document.getElementById('subjectFilter').value;
     const schoolFilter = document.getElementById('schoolFilter').value;
-    const maxPrice = parseInt(document.getElementById('priceRange').value);
 
     const filtered = teachers.filter(teacher => {
         const matchSearch = teacher.name.includes(searchText) || teacher.subject.includes(searchText);
         const matchStage = stageFilter === 'all' || teacher.stage === stageFilter;
         const matchSubject = subjectFilter === 'all' || teacher.subject === subjectFilter;
         const matchSchool = schoolFilter === 'all' || teacher.school === schoolFilter;
-        const matchPrice = teacher.price <= maxPrice;
 
-        return matchSearch && matchStage && matchSubject && matchSchool && matchPrice;
+        return matchSearch && matchStage && matchSubject && matchSchool;
     });
 
     displayTeachers(filtered);
-}
-
-function updatePriceLabel() {
-    const value = document.getElementById('priceRange').value;
-    document.getElementById('priceLabel').textContent = value + ' ج';
-    filterTeachers();
 }
 
 // ==========================================
@@ -211,7 +200,7 @@ function rateTeacher(teacherId) {
         `أدخل رقم من ١ إلى ٥:`
     );
 
-    if (rating === null) return; // المستخدم ألغى
+    if (rating === null) return;
 
     const ratingNum = parseInt(rating);
     if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
@@ -219,14 +208,12 @@ function rateTeacher(teacherId) {
         return;
     }
 
-    // حساب التقييم الجديد
     const newRating = (teacher.rating * teacher.totalRatings + ratingNum) / (teacher.totalRatings + 1);
     teacher.rating = Math.round(newRating * 10) / 10;
     teacher.totalRatings += 1;
 
     alert(`✅ شكراً لتقييمك!\nالتقييم الجديد للمدرس ${teacher.name}: ${teacher.rating} من ٥`);
 
-    // تحديث العرض
     displayTeachers(teachers);
 }
 
