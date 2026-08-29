@@ -2,13 +2,11 @@
 // ===== ١. منع التلاعب (الحماية) =====
 // ==========================================
 
-// منع الكليك الأيمن
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
     alert('❌ هذه الميزة غير متاحة');
 });
 
-// منع F12 و Ctrl+Shift+I و Ctrl+U
 document.addEventListener('keydown', function(e) {
     if (e.key === 'F12' || 
         (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
@@ -19,7 +17,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// منع Ctrl+Shift+J (Console)
 document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
         e.preventDefault();
@@ -28,7 +25,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// منع Ctrl+S (حفظ الصفحة)
 document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
         e.preventDefault();
@@ -37,18 +33,16 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// منع السحب
 document.ondragstart = function() {
     return false;
 };
 
-// منع تحديد النصوص
 document.onselectstart = function() {
     return false;
 };
 
 // ==========================================
-// ===== ٢. بيانات المدرسين (من localStorage) =====
+// ===== ٢. بيانات المدرسين =====
 // ==========================================
 
 let teachers = [];
@@ -58,22 +52,21 @@ function loadTeachers() {
     if (saved) {
         teachers = JSON.parse(saved);
     } else {
-        // البيانات الافتراضية مع المراحل المتعددة والقيمة
         teachers = [
-            {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], pricePerSession: 150, phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23},
-            {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], pricePerSession: 120, phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31},
-            {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], pricePerSession: 180, phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18},
-            {id: 4, name: "نورا أحمد", subject: "علوم", stages: ["ابتدائي", "اعدادي"], pricePerSession: 100, phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15},
-            {id: 5, name: "كريم يوسف", subject: "فيزياء", stages: ["ثانوي"], pricePerSession: 200, phone: "2010222333444", description: "مدرس فيزياء محترف", rating: 4.9, totalRatings: 27},
-            {id: 6, name: "منى إبراهيم", subject: "كيمياء", stages: ["ثانوي"], pricePerSession: 190, phone: "2010333444555", description: "شرح كيمياء بطريقة منظمة", rating: 4.5, totalRatings: 12},
-            {id: 7, name: "عمر حسن", subject: "تاريخ", stages: ["اعدادي", "ثانوي"], pricePerSession: 110, phone: "2010444555666", description: "أسلوب قصصي ممتع", rating: 4.3, totalRatings: 9},
-            {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stages: ["اعدادي"], pricePerSession: 110, phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط", rating: 4.4, totalRatings: 11},
-            {id: 9, name: "مصطفى رجب", subject: "ماث", stages: ["اعدادي"], pricePerSession: 130, phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية", rating: 4.2, totalRatings: 14},
-            {id: 10, name: "هدى سمير", subject: "إنجليزي", stages: ["ابتدائي", "اعدادي"], pricePerSession: 90, phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22},
-            {id: 11, name: "ياسر محمود", subject: "اداره اعمال", stages: ["ثانوي"], pricePerSession: 160, phone: "2010888999000", description: "خبير في إدارة الأعمال والتسويق", rating: 4.7, totalRatings: 8},
-            {id: 12, name: "نهى سامي", subject: "محاسبه", stages: ["ثانوي"], pricePerSession: 170, phone: "2010999000111", description: "خبرة في المحاسبة المالية والتدقيق", rating: 4.6, totalRatings: 6},
-            {id: 13, name: "عادل فكري", subject: "فلسفه", stages: ["ثانوي"], pricePerSession: 140, phone: "2010100011122", description: "شرح الفلسفة بأسلوب مبسط ومشوق", rating: 4.8, totalRatings: 10},
-            {id: 14, name: "شيماء أحمد", subject: "برمجه", stages: ["ثانوي"], pricePerSession: 200, phone: "2010111122233", description: "مبرمجة محترفة، تدرس Python و JavaScript", rating: 4.9, totalRatings: 15}
+            {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23, video: ""},
+            {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31, video: ""},
+            {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18, video: ""},
+            {id: 4, name: "نورا أحمد", subject: "علوم", stages: ["ابتدائي", "اعدادي"], phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15, video: ""},
+            {id: 5, name: "كريم يوسف", subject: "فيزياء", stages: ["ثانوي"], phone: "2010222333444", description: "مدرس فيزياء محترف", rating: 4.9, totalRatings: 27, video: ""},
+            {id: 6, name: "منى إبراهيم", subject: "كيمياء", stages: ["ثانوي"], phone: "2010333444555", description: "شرح كيمياء بطريقة منظمة", rating: 4.5, totalRatings: 12, video: ""},
+            {id: 7, name: "عمر حسن", subject: "تاريخ", stages: ["اعدادي", "ثانوي"], phone: "2010444555666", description: "أسلوب قصصي ممتع", rating: 4.3, totalRatings: 9, video: ""},
+            {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stages: ["اعدادي"], phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط", rating: 4.4, totalRatings: 11, video: ""},
+            {id: 9, name: "مصطفى رجب", subject: "ماث", stages: ["اعدادي"], phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية", rating: 4.2, totalRatings: 14, video: ""},
+            {id: 10, name: "هدى سمير", subject: "إنجليزي", stages: ["ابتدائي", "اعدادي"], phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22, video: ""},
+            {id: 11, name: "ياسر محمود", subject: "اداره اعمال", stages: ["ثانوي"], phone: "2010888999000", description: "خبير في إدارة الأعمال والتسويق", rating: 4.7, totalRatings: 8, video: ""},
+            {id: 12, name: "نهى سامي", subject: "محاسبه", stages: ["ثانوي"], phone: "2010999000111", description: "خبرة في المحاسبة المالية والتدقيق", rating: 4.6, totalRatings: 6, video: ""},
+            {id: 13, name: "عادل فكري", subject: "فلسفه", stages: ["ثانوي"], phone: "2010100011122", description: "شرح الفلسفة بأسلوب مبسط ومشوق", rating: 4.8, totalRatings: 10, video: ""},
+            {id: 14, name: "شيماء أحمد", subject: "برمجه", stages: ["ثانوي"], phone: "2010111122233", description: "مبرمجة محترفة، تدرس Python و JavaScript", rating: 4.9, totalRatings: 15, video: ""}
         ];
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
     }
@@ -81,11 +74,10 @@ function loadTeachers() {
 }
 
 // ==========================================
-// ===== ٣. عرض المدرسين (مرتب حسب التقييم) =====
+// ===== ٣. عرض المدرسين =====
 // ==========================================
 
 function displayTeachers(teachersList) {
-    // ترتيب المدرسين حسب التقييم (الأعلى أولاً)
     const sorted = [...teachersList].sort((a, b) => {
         const ratingA = a.rating || 0;
         const ratingB = b.rating || 0;
@@ -100,7 +92,6 @@ function displayTeachers(teachersList) {
         return;
     }
 
-    // جلب التقييمات من localStorage
     let ratings = {};
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -116,23 +107,20 @@ function displayTeachers(teachersList) {
         const teacherRating = ratings[teacher.id];
         const displayRating = teacherRating ? teacherRating.rating : (teacher.rating || 0);
         const displayTotal = teacherRating ? 1 : (teacher.totalRatings || 0);
-        
-        // عرض المراحل (بدلاً من مرحلة واحدة)
-        const stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : teacher.stage || '';
+        const stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : '';
+
+        const videoButton = teacher.video ? `
+            <a href="${teacher.video}" target="_blank" class="video-btn">
+                🎬 فيديو تعريفي عن المدرس
+            </a>
+        ` : '';
 
         const card = `
             <div class="teacher-card">
                 <div class="avatar">${teacher.name.charAt(0)}</div>
                 <h3>${teacher.name}</h3>
                 <div class="subject">📚 ${teacher.subject}</div>
-                <div class="detail">
-                    <span>📌 المراحل</span>
-                    <span>${stagesDisplay}</span>
-                </div>
-                <div class="detail">
-                    <span>💰 القيمة</span>
-                    <span class="price">${teacher.pricePerSession} ج / حصة</span>
-                </div>
+                <div class="stage-badge">📌 ${stagesDisplay}</div>
                 <div class="detail">
                     <span>⭐ التقييم</span>
                     <span class="rating">${displayRating} (${displayTotal} تقييم)</span>
@@ -143,15 +131,15 @@ function displayTeachers(teachersList) {
                 </div>
                 <p style="font-size:0.9rem;color:#7f8c8d;margin:10px 0;text-align:right;">📝 ${teacher.description || ''}</p>
                 
+                ${videoButton}
+                
                 <a href="https://wa.me/${teacher.phone}?text=السلام%20عليكم%20أستاذ%20${encodeURIComponent(teacher.name)}،%20أنا%20جيت%20من%20منصة%20Teachers%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" 
                    class="whatsapp-btn" target="_blank">
                     📱 تواصل مع المدرس
                 </a>
-                
                 <button class="rate-btn" onclick="rateTeacher(${teacher.id})">
                     ⭐ قيم المدرس
                 </button>
-
                 <button class="share-btn" onclick="sharePlatform(${teacher.id})">
                     📢 شارك المنصة مع طلابك وأولياء الأمور
                 </button>
@@ -162,7 +150,7 @@ function displayTeachers(teachersList) {
 }
 
 // ==========================================
-// ===== ٤. فلتر البحث (مرتب حسب التقييم) =====
+// ===== ٤. فلتر البحث =====
 // ==========================================
 
 function filterTeachers() {
@@ -178,7 +166,6 @@ function filterTeachers() {
         return matchSearch && matchStage && matchSubject;
     });
 
-    // ترتيب النتائج حسب التقييم (الأعلى أولاً)
     const sorted = [...filtered].sort((a, b) => {
         const ratingA = a.rating || 0;
         const ratingB = b.rating || 0;
@@ -189,14 +176,13 @@ function filterTeachers() {
 }
 
 // ==========================================
-// ===== ٥. نظام التقييم (مرة واحدة لكل جهاز) =====
+// ===== ٥. نظام التقييم =====
 // ==========================================
 
 function rateTeacher(teacherId) {
     const teacher = teachers.find(t => t.id === teacherId);
     if (!teacher) return;
 
-    // التحقق: هل قيم المدرس ده قبل كده؟
     const existingRating = localStorage.getItem(`rated_${teacherId}`);
     if (existingRating) {
         try {
@@ -233,18 +219,15 @@ function rateTeacher(teacherId) {
         return;
     }
 
-    // حساب التقييم الجديد
     const newRating = (teacher.rating * teacher.totalRatings + ratingNum) / (teacher.totalRatings + 1);
     teacher.rating = Math.round(newRating * 10) / 10;
     teacher.totalRatings += 1;
 
-    // حفظ التقييم في localStorage
     localStorage.setItem(`rated_${teacherId}`, JSON.stringify({
         rating: ratingNum,
         date: new Date().toISOString()
     }));
 
-    // تحديث تقييم المدرس في adminTeachers
     const savedTeachers = JSON.parse(localStorage.getItem('adminTeachers') || '[]');
     const index = savedTeachers.findIndex(t => t.id === teacherId);
     if (index !== -1) {
