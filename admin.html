@@ -17,7 +17,6 @@
             padding: 20px;
         }
 
-        /* ===== صفحة الدخول ===== */
         .login-box {
             background: white;
             padding: 40px;
@@ -70,7 +69,6 @@
             display: none;
         }
 
-        /* ===== لوحة التحكم ===== */
         .dashboard-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -361,7 +359,6 @@
 </head>
 <body>
 
-    <!-- ===== صفحة الدخول ===== -->
     <div id="loginSection" class="login-box">
         <h1>🔐 لوحة التحكم</h1>
         <p>أدخل كلمة المرور للوصول</p>
@@ -370,9 +367,7 @@
         <div class="error" id="errorMsg">❌ كلمة المرور غير صحيحة</div>
     </div>
 
-    <!-- ===== لوحة التحكم ===== -->
     <div id="dashboardSection" class="dashboard-container">
-
         <div class="dashboard-header">
             <h1>📊 لوحة التحكم</h1>
             <div class="btn-group">
@@ -410,7 +405,6 @@
         </div>
     </div>
 
-    <!-- ===== مودال إضافة/تعديل ===== -->
     <div id="teacherModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">➕ إضافة مدرس جديد</h2>
@@ -418,15 +412,14 @@
             <input type="text" id="teacherName" placeholder="اسم المدرس">
             <input type="text" id="teacherSubject" placeholder="المادة (ماث، عربي، إنجليزي...)">
             
-            <!-- المراحل المتعددة (checkbox) -->
             <div class="checkbox-group">
                 <label><input type="checkbox" id="stage1" value="ابتدائي"> ابتدائي</label>
                 <label><input type="checkbox" id="stage2" value="اعدادي"> اعدادي</label>
                 <label><input type="checkbox" id="stage3" value="ثانوي"> ثانوي</label>
             </div>
             
-            <input type="number" id="teacherPrice" placeholder="القيمة (ج / حصة)">
             <input type="text" id="teacherPhone" placeholder="رقم واتساب (مثال: 201012345678)">
+            <input type="text" id="teacherVideo" placeholder="رابط فيديو يوتيوب (مثال: https://youtu.be/VIDEO_ID)">
             <textarea id="teacherDescription" placeholder="وصف المدرس"></textarea>
             <button class="btn-save" onclick="saveTeacher()">💾 حفظ</button>
             <button class="btn-close" onclick="closeModal()">إلغاء</button>
@@ -436,10 +429,7 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // ===== كلمة المرور =====
-        const ADMIN_PASSWORD = "php123";
-
-        // ===== ١. نظام الدخول =====
+        const ADMIN_PASSWORD = "dog12";
 
         document.addEventListener('DOMContentLoaded', function() {
             if (localStorage.getItem('adminLoggedIn') === 'true') {
@@ -475,8 +465,6 @@
             }
         }
 
-        // ===== ٢. بيانات المدرسين =====
-
         let teachers = [];
 
         function loadTeachers() {
@@ -485,20 +473,20 @@
                 teachers = JSON.parse(saved);
             } else {
                 teachers = [
-                    {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], pricePerSession: 150, phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23},
-                    {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], pricePerSession: 120, phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31},
-                    {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], pricePerSession: 180, phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18},
-                    {id: 4, name: "نورا أحمد", subject: "علوم", stages: ["ابتدائي", "اعدادي"], pricePerSession: 100, phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15},
-                    {id: 5, name: "كريم يوسف", subject: "فيزياء", stages: ["ثانوي"], pricePerSession: 200, phone: "2010222333444", description: "مدرس فيزياء محترف", rating: 4.9, totalRatings: 27},
-                    {id: 6, name: "منى إبراهيم", subject: "كيمياء", stages: ["ثانوي"], pricePerSession: 190, phone: "2010333444555", description: "شرح كيمياء بطريقة منظمة", rating: 4.5, totalRatings: 12},
-                    {id: 7, name: "عمر حسن", subject: "تاريخ", stages: ["اعدادي", "ثانوي"], pricePerSession: 110, phone: "2010444555666", description: "أسلوب قصصي ممتع", rating: 4.3, totalRatings: 9},
-                    {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stages: ["اعدادي"], pricePerSession: 110, phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط", rating: 4.4, totalRatings: 11},
-                    {id: 9, name: "مصطفى رجب", subject: "ماث", stages: ["اعدادي"], pricePerSession: 130, phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية", rating: 4.2, totalRatings: 14},
-                    {id: 10, name: "هدى سمير", subject: "إنجليزي", stages: ["ابتدائي", "اعدادي"], pricePerSession: 90, phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22},
-                    {id: 11, name: "ياسر محمود", subject: "اداره اعمال", stages: ["ثانوي"], pricePerSession: 160, phone: "2010888999000", description: "خبير في إدارة الأعمال والتسويق", rating: 4.7, totalRatings: 8},
-                    {id: 12, name: "نهى سامي", subject: "محاسبه", stages: ["ثانوي"], pricePerSession: 170, phone: "2010999000111", description: "خبرة في المحاسبة المالية والتدقيق", rating: 4.6, totalRatings: 6},
-                    {id: 13, name: "عادل فكري", subject: "فلسفه", stages: ["ثانوي"], pricePerSession: 140, phone: "2010100011122", description: "شرح الفلسفة بأسلوب مبسط ومشوق", rating: 4.8, totalRatings: 10},
-                    {id: 14, name: "شيماء أحمد", subject: "برمجه", stages: ["ثانوي"], pricePerSession: 200, phone: "2010111122233", description: "مبرمجة محترفة، تدرس Python و JavaScript", rating: 4.9, totalRatings: 15}
+                    {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23, video: ""},
+                    {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31, video: ""},
+                    {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18, video: ""},
+                    {id: 4, name: "نورا أحمد", subject: "علوم", stages: ["ابتدائي", "اعدادي"], phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15, video: ""},
+                    {id: 5, name: "كريم يوسف", subject: "فيزياء", stages: ["ثانوي"], phone: "2010222333444", description: "مدرس فيزياء محترف", rating: 4.9, totalRatings: 27, video: ""},
+                    {id: 6, name: "منى إبراهيم", subject: "كيمياء", stages: ["ثانوي"], phone: "2010333444555", description: "شرح كيمياء بطريقة منظمة", rating: 4.5, totalRatings: 12, video: ""},
+                    {id: 7, name: "عمر حسن", subject: "تاريخ", stages: ["اعدادي", "ثانوي"], phone: "2010444555666", description: "أسلوب قصصي ممتع", rating: 4.3, totalRatings: 9, video: ""},
+                    {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stages: ["اعدادي"], phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط", rating: 4.4, totalRatings: 11, video: ""},
+                    {id: 9, name: "مصطفى رجب", subject: "ماث", stages: ["اعدادي"], phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية", rating: 4.2, totalRatings: 14, video: ""},
+                    {id: 10, name: "هدى سمير", subject: "إنجليزي", stages: ["ابتدائي", "اعدادي"], phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22, video: ""},
+                    {id: 11, name: "ياسر محمود", subject: "اداره اعمال", stages: ["ثانوي"], phone: "2010888999000", description: "خبير في إدارة الأعمال والتسويق", rating: 4.7, totalRatings: 8, video: ""},
+                    {id: 12, name: "نهى سامي", subject: "محاسبه", stages: ["ثانوي"], phone: "2010999000111", description: "خبرة في المحاسبة المالية والتدقيق", rating: 4.6, totalRatings: 6, video: ""},
+                    {id: 13, name: "عادل فكري", subject: "فلسفه", stages: ["ثانوي"], phone: "2010100011122", description: "شرح الفلسفة بأسلوب مبسط ومشوق", rating: 4.8, totalRatings: 10, video: ""},
+                    {id: 14, name: "شيماء أحمد", subject: "برمجه", stages: ["ثانوي"], phone: "2010111122233", description: "مبرمجة محترفة، تدرس Python و JavaScript", rating: 4.9, totalRatings: 15, video: ""}
                 ];
                 localStorage.setItem('adminTeachers', JSON.stringify(teachers));
             }
@@ -509,8 +497,6 @@
         function saveTeachers() {
             localStorage.setItem('adminTeachers', JSON.stringify(teachers));
         }
-
-        // ===== ٣. عرض المدرسين =====
 
         function renderTeachers() {
             const container = document.getElementById('teachersList');
@@ -536,6 +522,7 @@
                 const teacherRatings = ratings[t.id];
                 const ratingValue = teacherRatings ? teacherRatings.rating : (t.rating || 0);
                 const ratingCount = teacherRatings ? 1 : (t.totalRatings || 0);
+                const videoDisplay = t.video ? '🎬 رابط فيديو' : 'لا يوجد';
 
                 return `
                     <div class="teacher-item">
@@ -543,9 +530,9 @@
                             <strong>${t.name}</strong>
                             <span>📚 ${t.subject}</span>
                             <span>📌 ${stagesDisplay}</span>
-                            <span>💰 ${t.pricePerSession} ج</span>
                             <span>⭐ ${ratingValue} (${ratingCount} تقييم)</span>
                             <span>📱 ${t.phone}</span>
+                            <span>🎬 ${videoDisplay}</span>
                         </div>
                         <div class="actions">
                             <button class="btn-edit" onclick="editTeacher(${t.id})">✏️ تعديل</button>
@@ -556,8 +543,6 @@
             }).join('');
         }
 
-        // ===== ٤. الإحصائيات =====
-
         function updateStats() {
             document.getElementById('totalTeachers').textContent = teachers.length;
 
@@ -565,7 +550,7 @@
             document.getElementById('totalSubjects').textContent = subjects.size;
 
             if (teachers.length > 0) {
-                                const avg = teachers.reduce((sum, t) => sum + (t.pricePerSession || 0), 0) / teachers.length;
+                const avg = teachers.reduce((sum, t) => sum + (t.pricePerSession || 0), 0) / teachers.length;
                 document.getElementById('avgPrice').textContent = Math.round(avg) + ' ج';
             }
 
@@ -579,8 +564,6 @@
             document.getElementById('totalRatings').textContent = totalRatings;
         }
 
-        // ===== ٥. إضافة وتعديل وحذف =====
-
         function showAddModal() {
             document.getElementById('modalTitle').textContent = '➕ إضافة مدرس جديد';
             document.getElementById('editId').value = '';
@@ -589,8 +572,8 @@
             document.getElementById('stage1').checked = false;
             document.getElementById('stage2').checked = false;
             document.getElementById('stage3').checked = false;
-            document.getElementById('teacherPrice').value = '';
             document.getElementById('teacherPhone').value = '';
+            document.getElementById('teacherVideo').value = '';
             document.getElementById('teacherDescription').value = '';
             document.getElementById('teacherModal').style.display = 'block';
         }
@@ -604,13 +587,12 @@
             document.getElementById('teacherName').value = teacher.name;
             document.getElementById('teacherSubject').value = teacher.subject;
             
-            // اختيار المراحل
             document.getElementById('stage1').checked = teacher.stages && teacher.stages.includes('ابتدائي');
             document.getElementById('stage2').checked = teacher.stages && teacher.stages.includes('اعدادي');
             document.getElementById('stage3').checked = teacher.stages && teacher.stages.includes('ثانوي');
             
-            document.getElementById('teacherPrice').value = teacher.pricePerSession;
             document.getElementById('teacherPhone').value = teacher.phone;
+            document.getElementById('teacherVideo').value = teacher.video || '';
             document.getElementById('teacherDescription').value = teacher.description || '';
             document.getElementById('teacherModal').style.display = 'block';
         }
@@ -620,18 +602,17 @@
             const name = document.getElementById('teacherName').value.trim();
             const subject = document.getElementById('teacherSubject').value.trim();
             
-            // جلب المراحل المختارة
             const stages = [];
             if (document.getElementById('stage1').checked) stages.push('ابتدائي');
             if (document.getElementById('stage2').checked) stages.push('اعدادي');
             if (document.getElementById('stage3').checked) stages.push('ثانوي');
             
-            const pricePerSession = parseInt(document.getElementById('teacherPrice').value);
             const phone = document.getElementById('teacherPhone').value.trim();
+            const video = document.getElementById('teacherVideo').value.trim();
             const description = document.getElementById('teacherDescription').value.trim();
 
-            if (!name || !subject || stages.length === 0 || !pricePerSession || !phone) {
-                showToast('❌ يرجى ملء جميع الحقول المطلوبة (الاسم، المادة، مرحلة واحدة على الأقل، القيمة، رقم واتساب)', 'error');
+            if (!name || !subject || stages.length === 0 || !phone) {
+                showToast('❌ يرجى ملء جميع الحقول المطلوبة (الاسم، المادة، مرحلة واحدة على الأقل، رقم واتساب)', 'error');
                 return;
             }
 
@@ -643,8 +624,8 @@
                         name, 
                         subject, 
                         stages, 
-                        pricePerSession, 
                         phone, 
+                        video: video || null,
                         description 
                     };
                 }
@@ -655,8 +636,8 @@
                     name, 
                     subject, 
                     stages, 
-                    pricePerSession, 
                     phone, 
+                    video: video || null,
                     description,
                     rating: 0,
                     totalRatings: 0
@@ -687,8 +668,6 @@
             document.getElementById('teacherModal').style.display = 'none';
         }
 
-        // ===== ٦. Toast =====
-
         function showToast(message, type) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -699,8 +678,6 @@
                 toast.style.display = 'none';
             }, 3000);
         }
-
-        // ===== ٧. إغلاق المودال =====
 
         window.onclick = function(event) {
             if (event.target === document.getElementById('teacherModal')) {
@@ -714,3 +691,4 @@
 
 </body>
 </html>
+            
