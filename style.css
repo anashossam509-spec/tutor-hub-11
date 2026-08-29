@@ -43,8 +43,7 @@ header p {
 
 #searchInput,
 #stageFilter,
-#subjectFilter,
-#schoolFilter {
+#subjectFilter {
     padding: 12px 20px;
     border: 2px solid #ddd;
     border-radius: 30px;
@@ -56,8 +55,7 @@ header p {
 
 #searchInput:focus,
 #stageFilter:focus,
-#subjectFilter:focus,
-#schoolFilter:focus {
+#subjectFilter:focus {
     outline: none;
     border-color: #1a2a6c;
     box-shadow: 0 0 10px rgba(26, 42, 108, 0.2);
@@ -147,10 +145,6 @@ header p {
     font-weight: bold;
 }
 
-.teacher-card .school {
-    color: #27ae60;
-}
-
 .teacher-card .phone {
     color: #1a2a6c;
     font-weight: bold;
@@ -214,12 +208,6 @@ footer {
     padding: 50px 0;
 }
 
-.rating-stars {
-    color: #f39c12;
-    font-size: 1.2rem;
-    letter-spacing: 2px;
-}
-
 @media (max-width: 600px) {
     header h1 {
         font-size: 1.8rem;
@@ -230,8 +218,7 @@ footer {
     }
     #searchInput,
     #stageFilter,
-    #subjectFilter,
-    #schoolFilter {
+    #subjectFilter {
         width: 90%;
     }
     .teacher-card {
