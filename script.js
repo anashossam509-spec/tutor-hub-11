@@ -1,3 +1,4 @@
+
 // ==========================================
 // ===== ١. منع التلاعب (الحماية) =====
 // ==========================================
@@ -102,13 +103,10 @@ async function getTeachersFromCloud() {
 // كتابة المدرسين في JSON Bin
 async function saveTeachersToCloud(teachersData) {
     try {
-        // جلب البيانات الحالية
         const res = await fetch(JSONBIN_URL, {
             headers: { 'X-Master-Key': JSONBIN_API_KEY }
         });
         const data = await res.json();
-        
-        // تحديث جزء teachers فقط
         const currentData = data.record || {};
         currentData.teachers = teachersData;
         
@@ -132,35 +130,25 @@ async function saveTeachersToCloud(teachersData) {
 let teachers = [];
 
 async function loadTeachers() {
-    // محاولة جلب المدرسين من JSON Bin
+    // جلب من السحابة فقط
     const cloudTeachers = await getTeachersFromCloud();
     
     if (cloudTeachers && cloudTeachers.length > 0) {
         teachers = cloudTeachers;
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
     } else {
-        // البيانات الافتراضية (لو مفيش حاجة في السحابة)
-        teachers = [
-            {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23, video: ""},
-            {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31, video: ""},
-            {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18, video: ""},
-            {id: 4, name: "نورا أحمد", subject: "علوم", stages: ["ابتدائي", "اعدادي"], phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15, video: ""},
-            {id: 5, name: "كريم يوسف", subject: "فيزياء", stages: ["ثانوي"], phone: "2010222333444", description: "مدرس فيزياء محترف", rating: 4.9, totalRatings: 27, video: ""},
-            {id: 6, name: "منى إبراهيم", subject: "كيمياء", stages: ["ثانوي"], phone: "2010333444555", description: "شرح كيمياء بطريقة منظمة", rating: 4.5, totalRatings: 12, video: ""},
-            {id: 7, name: "عمر حسن", subject: "تاريخ", stages: ["اعدادي", "ثانوي"], phone: "2010444555666", description: "أسلوب قصصي ممتع", rating: 4.3, totalRatings: 9, video: ""},
-            {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stages: ["اعدادي"], phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط", rating: 4.4, totalRatings: 11, video: ""},
-            {id: 9, name: "مصطفى رجب", subject: "ماث", stages: ["اعدادي"], phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية", rating: 4.2, totalRatings: 14, video: ""},
-            {id: 10, name: "هدى سمير", subject: "إنجليزي", stages: ["ابتدائي", "اعدادي"], phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22, video: ""},
-            {id: 11, name: "ياسر محمود", subject: "اداره اعمال", stages: ["ثانوي"], phone: "2010888999000", description: "خبير في إدارة الأعمال والتسويق", rating: 4.7, totalRatings: 8, video: ""},
-            {id: 12, name: "نهى سامي", subject: "محاسبه", stages: ["ثانوي"], phone: "2010999000111", description: "خبرة في المحاسبة المالية والتدقيق", rating: 4.6, totalRatings: 6, video: ""},
-            {id: 13, name: "عادل فكري", subject: "فلسفه", stages: ["ثانوي"], phone: "2010100011122", description: "شرح الفلسفة بأسلوب مبسط ومشوق", rating: 4.8, totalRatings: 10, video: ""},
-            {id: 14, name: "شيماء أحمد", subject: "برمجه", stages: ["ثانوي"], phone: "2010111122233", description: "مبرمجة محترفة، تدرس Python و JavaScript", rating: 4.9, totalRatings: 15, video: ""}
-        ];
+        // لو مفيش مدرسين في السحابة، نبدأ بمصفوفة فارغة
+        teachers = [];
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-        // حفظ المدرسين في JSON Bin
         await saveTeachersToCloud(teachers);
     }
+    
     displayTeachers(teachers);
+}
+
+function saveTeachers() {
+    localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+    saveTeachersToCloud(teachers);
 }
 
 // ==========================================
@@ -340,7 +328,6 @@ async function rateTeacher(teacherId) {
         savedTeachers[index].totalRatings = total;
         localStorage.setItem('adminTeachers', JSON.stringify(savedTeachers));
         teachers = savedTeachers;
-        // حفظ التحديث في JSON Bin
         await saveTeachersToCloud(teachers);
     }
 
@@ -393,3 +380,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
+```
