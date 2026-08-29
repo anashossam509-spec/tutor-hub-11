@@ -861,6 +861,21 @@
 
         console.log('🔐 لوحة التحكم - أنت المطور');
         console.log('📊 عدد المدرسين:', teachers.length);
+function login() {
+    var password = document.getElementById('adminPassword').value;
+    if (password === "php123") {
+        localStorage.setItem('adminLoggedIn', 'true');
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('dashboardSection').style.display = 'block';
+        loadTeachers();
+        loadRatings();
+    } else {
+        document.getElementById('errorMsg').style.display = 'block';
+        setTimeout(function() {
+            document.getElementById('errorMsg').style.display = 'none';
+        }, 3000);
+    }
+}
     </script>
 
 </body>
