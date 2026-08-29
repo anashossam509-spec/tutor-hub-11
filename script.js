@@ -45,7 +45,7 @@ document.onselectstart = function() {
 // ===== ٢. تهيئة JSON Bin =====
 // ==========================================
 
-const JSONBIN_BIN_ID = '67b3310dacd3cb34a8e66cbf';
+const JSONBIN_BIN_ID = '6a936a6cf5f4af5e295310fe';
 const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
 const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
@@ -55,7 +55,6 @@ console.log('✅ JSON Bin connected successfully');
 // ===== ٣. دوال JSON Bin =====
 // ==========================================
 
-// قراءة التقييمات من JSON Bin
 async function getRatings() {
     try {
         const res = await fetch(JSONBIN_URL, {
@@ -69,23 +68,28 @@ async function getRatings() {
     }
 }
 
-// كتابة التقييمات في JSON Bin
 async function saveRatings(ratings) {
     try {
+        const res = await fetch(JSONBIN_URL, {
+            headers: { 'X-Master-Key': JSONBIN_API_KEY }
+        });
+        const data = await res.json();
+        const currentData = data.record || {};
+        currentData.ratings = ratings;
+
         await fetch(JSONBIN_URL, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Master-Key': JSONBIN_API_KEY
             },
-            body: JSON.stringify({ ratings })
+            body: JSON.stringify(currentData)
         });
     } catch (error) {
         console.error('Error saving ratings:', error);
     }
 }
 
-// قراءة المدرسين من JSON Bin
 async function getTeachersFromCloud() {
     try {
         const res = await fetch(JSONBIN_URL, {
@@ -99,7 +103,6 @@ async function getTeachersFromCloud() {
     }
 }
 
-// كتابة المدرسين في JSON Bin
 async function saveTeachersToCloud(teachersData) {
     try {
         const res = await fetch(JSONBIN_URL, {
@@ -108,7 +111,7 @@ async function saveTeachersToCloud(teachersData) {
         const data = await res.json();
         const currentData = data.record || {};
         currentData.teachers = teachersData;
-        
+
         await fetch(JSONBIN_URL, {
             method: 'PUT',
             headers: {
@@ -129,29 +132,25 @@ async function saveTeachersToCloud(teachersData) {
 let teachers = [];
 
 async function loadTeachers() {
-    // ١. حاول جلب من JSON Bin (السحابة)
     const cloudTeachers = await getTeachersFromCloud();
-    
+
     if (cloudTeachers && cloudTeachers.length > 0) {
         teachers = cloudTeachers;
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
     } else {
-        // ٢. لو مفيش في السحابة، جيب من localStorage (احتياطي)
         const saved = localStorage.getItem('adminTeachers');
         if (saved) {
             teachers = JSON.parse(saved);
-            // لو localStorage فيه بيانات، احفظها في السحابة عشان تتشارك
             if (teachers.length > 0) {
                 await saveTeachersToCloud(teachers);
             }
         } else {
-            // ٣. لو مفيش خالص، ابدأ بمصفوفة فارغة
             teachers = [];
             localStorage.setItem('adminTeachers', JSON.stringify(teachers));
             await saveTeachersToCloud(teachers);
         }
     }
-    
+
     displayTeachers(teachers);
 }
 
@@ -283,7 +282,7 @@ async function rateTeacher(teacherId) {
     }
 
     const ratings = await getRatings();
-    
+
     if (ratings[teacherId] && ratings[teacherId][userPhone]) {
         const data = ratings[teacherId][userPhone];
         const date = new Date(data.date).toLocaleString('ar-EG', {
@@ -327,13 +326,12 @@ async function rateTeacher(teacherId) {
     const avg = values.reduce((a, b) => a + b, 0) / values.length;
     const total = values.length;
 
-    const savedTeachers = JSON.parse(localStorage.getItem('adminTeachers') || '[]');
-    const index = savedTeachers.findIndex(t => t.id === teacherId);
+    teachers = await getTeachersFromCloud();
+    const index = teachers.findIndex(t => t.id === teacherId);
     if (index !== -1) {
-        savedTeachers[index].rating = Math.round(avg * 10) / 10;
-        savedTeachers[index].totalRatings = total;
-        localStorage.setItem('adminTeachers', JSON.stringify(savedTeachers));
-        teachers = savedTeachers;
+        teachers[index].rating = Math.round(avg * 10) / 10;
+        teachers[index].totalRatings = total;
+        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
         await saveTeachersToCloud(teachers);
     }
 
@@ -357,7 +355,7 @@ function sharePlatform(teacherId) {
         `👨‍🎓 للطلاب: قيموا مدرسكم وساعدوه يظهر في المنصة\n` +
         `👨‍👩‍👦 لأولياء الأمور: شوفوا التقييمات وتواصلوا مع أفضل المدرسين\n` +
         `👨‍🏫 للمدرسين: سجلوا في المنصة ووصلوا لأكبر عدد من الطلاب`;
-    
+
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
 }
 
