@@ -13,7 +13,6 @@
         <p>دليلك لأفضل المدرسين في مدينة الشروق - تقييمات حقيقية من أمهات وطلاب</p>
     </header>
 
-    <!-- الفلاتر -->
     <section id="filters">
         <input type="text" id="searchInput" placeholder="🔍 ابحث عن مدرس أو مادة..." onkeyup="filterTeachers()">
         
@@ -40,24 +39,25 @@
     <section id="teachers-container">
         <!-- هيتضاف المدرسين هنا بواسطة JavaScript -->
     </section>
-<!-- زر لوحة التحكم (مخفي عن الطلاب) -->
-<button id="adminBtn" onclick="showAdminPanel()" style="
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: #1a2a6c;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    z-index: 999;
-    font-weight: bold;
-">
-    🔐 لوحة التحكم
-</button>
+
+    <!-- ===== زر لوحة التحكم ===== -->
+    <button id="adminBtn" onclick="showAdminPanel()" style="
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: #1a2a6c;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 30px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 999;
+        font-weight: bold;
+    ">
+        🔐 لوحة التحكم
+    </button>
 
     <footer>
         <p>© 2026 Teachers Hub - جميع الحقوق محفوظة</p>
