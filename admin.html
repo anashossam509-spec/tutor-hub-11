@@ -403,14 +403,15 @@
                 <div class="empty-msg">⏳ جاري التحميل...</div>
             </div>
         </div>
+
+        <!-- ===== قسم إدارة التقييمات ===== -->
+        <div class="teacher-list" style="margin-top: 30px;">
+            <h2>📊 إدارة التقييمات</h2>
+            <div id="ratingsList">
+                <div class="empty-msg">⏳ جاري التحميل...</div>
+            </div>
+        </div>
     </div>
-<!-- ===== قسم إدارة التقييمات ===== -->
-<div class="teacher-list" style="margin-top: 30px;">
-    <h2>📊 إدارة التقييمات</h2>
-    <div id="ratingsList">
-        <div class="empty-msg">⏳ جاري التحميل...</div>
-    </div>
-</div>
 
     <div id="teacherModal" class="modal">
         <div class="modal-content">
@@ -436,7 +437,7 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        const ADMIN_PASSWORD = "dog12";
+        const ADMIN_PASSWORD = "php123";
 
         document.addEventListener('DOMContentLoaded', function() {
             if (localStorage.getItem('adminLoggedIn') === 'true') {
@@ -461,6 +462,7 @@
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('dashboardSection').style.display = 'block';
             loadTeachers();
+            loadRatings();
         }
 
         function logout() {
@@ -561,7 +563,7 @@
                 document.getElementById('avgPrice').textContent = Math.round(avg) + ' ج';
             }
 
-            let totalRatings = 0;
+                        let totalRatings = 0;
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key && key.startsWith('rated_')) {
@@ -655,6 +657,7 @@
             renderTeachers();
             updateStats();
             closeModal();
+            loadRatings();
             showToast('✅ تم الحفظ بنجاح', 'success');
         }
 
@@ -667,6 +670,7 @@
                 saveTeachers();
                 renderTeachers();
                 updateStats();
+                loadRatings();
                 showToast('✅ تم الحذف بنجاح', 'success');
             }
         }
@@ -686,6 +690,154 @@
             }, 3000);
         }
 
+        // ==========================================
+        // ===== إدارة التقييمات =====
+        // ==========================================
+
+        function loadRatings() {
+            const container = document.getElementById('ratingsList');
+            if (!container) return;
+
+            let allRatings = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('rated_')) {
+                    const teacherId = key.replace('rated_', '');
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        const teacher = teachers.find(t => t.id == teacherId);
+                        allRatings.push({
+                            teacherId: teacherId,
+                            teacherName: teacher ? teacher.name : 'مدرس محذوف',
+                            rating: data.rating,
+                            date: data.date
+                        });
+                    } catch {}
+                }
+            }
+
+            if (allRatings.length === 0) {
+                container.innerHTML = '<div class="empty-msg">📭 لا يوجد تقييمات حالياً</div>';
+                return;
+            }
+
+            container.innerHTML = allRatings.map((r) => `
+                <div class="teacher-item">
+                    <div class="info">
+                        <strong>👨‍🏫 ${r.teacherName}</strong>
+                        <span>⭐ التقييم: ${r.rating} من ٥</span>
+                        <span>📅 ${new Date(r.date).toLocaleString('ar-EG')}</span>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit" onclick="editRating('${r.teacherId}')">✏️ تعديل</button>
+                        <button class="btn-delete" onclick="deleteRating('${r.teacherId}')">🗑️ حذف</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editRating(teacherId) {
+            const existing = localStorage.getItem(`rated_${teacherId}`);
+            if (!existing) {
+                showToast('❌ لا يوجد تقييم لهذا المدرس', 'error');
+                return;
+            }
+
+            const data = JSON.parse(existing);
+            const teacher = teachers.find(t => t.id == teacherId);
+            const newRating = prompt(
+                `✏️ تعديل تقييم المدرس ${teacher ? teacher.name : 'مدرس محذوف'}\n` +
+                `التقييم الحالي: ${data.rating} من ٥\n` +
+                `أدخل التقييم الجديد (١-٥):`
+            );
+
+            if (newRating === null) return;
+
+            const ratingNum = parseInt(newRating);
+            if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+                showToast('❌ يرجى إدخال رقم بين ١ و ٥', 'error');
+                return;
+            }
+
+            data.rating = ratingNum;
+            localStorage.setItem(`rated_${teacherId}`, JSON.stringify(data));
+
+            if (teacher) {
+                const savedTeachers = JSON.parse(localStorage.getItem('adminTeachers') || '[]');
+                const index = savedTeachers.findIndex(t => t.id == teacherId);
+                if (index !== -1) {
+                    const allRatings = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && key.startsWith('rated_')) {
+                            try {
+                                const r = JSON.parse(localStorage.getItem(key));
+                                allRatings.push(r.rating);
+                            } catch {}
+                        }
+                    }
+                    const avg = allRatings.reduce((a, b) => a + b, 0) / allRatings.length;
+                    savedTeachers[index].rating = Math.round(avg * 10) / 10;
+                    savedTeachers[index].totalRatings = allRatings.length;
+                    localStorage.setItem('adminTeachers', JSON.stringify(savedTeachers));
+                    teachers = savedTeachers;
+                }
+            }
+
+            showToast('✅ تم تعديل التقييم بنجاح', 'success');
+            loadRatings();
+            renderTeachers();
+            updateStats();
+        }
+
+        function deleteRating(teacherId) {
+            const existing = localStorage.getItem(`rated_${teacherId}`);
+            if (!existing) {
+                showToast('❌ لا يوجد تقييم لهذا المدرس', 'error');
+                return;
+            }
+
+            const teacher = teachers.find(t => t.id == teacherId);
+            
+            if (!confirm(`⚠️ هل أنت متأكد من حذف تقييم المدرس "${teacher ? teacher.name : 'مدرس محذوف'}"؟`)) {
+                return;
+            }
+
+            localStorage.removeItem(`rated_${teacherId}`);
+
+            if (teacher) {
+                const savedTeachers = JSON.parse(localStorage.getItem('adminTeachers') || '[]');
+                const index = savedTeachers.findIndex(t => t.id == teacherId);
+                if (index !== -1) {
+                    const allRatings = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && key.startsWith('rated_')) {
+                            try {
+                                const r = JSON.parse(localStorage.getItem(key));
+                                allRatings.push(r.rating);
+                            } catch {}
+                        }
+                    }
+                    if (allRatings.length > 0) {
+                        const avg = allRatings.reduce((a, b) => a + b, 0) / allRatings.length;
+                        savedTeachers[index].rating = Math.round(avg * 10) / 10;
+                        savedTeachers[index].totalRatings = allRatings.length;
+                    } else {
+                        savedTeachers[index].rating = 0;
+                        savedTeachers[index].totalRatings = 0;
+                    }
+                    localStorage.setItem('adminTeachers', JSON.stringify(savedTeachers));
+                    teachers = savedTeachers;
+                }
+            }
+
+            showToast('✅ تم حذف التقييم بنجاح', 'success');
+            loadRatings();
+            renderTeachers();
+            updateStats();
+        }
+
         window.onclick = function(event) {
             if (event.target === document.getElementById('teacherModal')) {
                 closeModal();
@@ -698,4 +850,3 @@
 
 </body>
 </html>
-            
