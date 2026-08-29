@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم Teachers Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f0f4f8;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ===== صفحة الدخول ===== */
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            margin: 50px auto;
+        }
+        .login-box h1 {
+            color: #1a2a6c;
+            margin-bottom: 10px;
+        }
+        .login-box p {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+        .login-box input:focus {
+            outline: none;
+            border-color: #1a2a6c;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 15px;
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .login-box button:hover {
+            background: #2d4373;
+        }
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* ===== لوحة التحكم ===== */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: none;
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .dashboard-header h1 {
+            color: #1a2a6c;
+        }
+        .dashboard-header .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .dashboard-header .btn-group button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-add {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-add:hover {
+            background: #219a52;
+        }
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-logout:hover {
+            background: #c0392b;
+        }
+        .btn-refresh {
+            background: #3498db;
+            color: white;
+        }
+        .btn-refresh:hover {
+            background: #2980b9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .stat-card h3 {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a2a6c;
+        }
+
+        .teacher-list {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .teacher-list h2 {
+            color: #1a2a6c;
+            margin-bottom: 20px;
+        }
+        .teacher-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .teacher-item:last-child {
+            border-bottom: none;
+        }
+        .teacher-item .info {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .teacher-item .info strong {
+            color: #1a2a6c;
+            min-width: 100px;
+        }
+        .teacher-item .info span {
+            color: #7f8c8d;
+        }
+        .teacher-item .actions {
+            display: flex;
+            gap: 8px;
+        }
+        .teacher-item .actions button {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+        .btn-edit {
+            background: #f39c12;
+            color: white;
+        }
+        .btn-edit:hover {
+            background: #e67e22;
+        }
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .admin-only {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 8px 15px;
+            border-radius: 8px;
+            color: #856404;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            margin: 50px auto;
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            color: #1a2a6c;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .modal-content input,
+        .modal-content textarea,
+        .modal-content select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        .modal-content textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .modal-content .btn-save {
+            background: #27ae60;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-content .btn-save:hover {
+            background: #219a52;
+        }
+        .modal-content .btn-close {
+            background: #e74c3c;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 30px;
+        }
+
+        /* ===== Toast notification ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a2a6c;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .toast.success {
+            background: #27ae60;
+        }
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .dashboard-header .btn-group {
+                justify-content: center;
+            }
+            .teacher-item {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .teacher-item .info {
+                justify-content: center;
+            }
+            .teacher-item .actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- ===== ١. صفحة الدخول ===== -->
+    <!-- ========================================== -->
+    <div id="loginSection" class="login-box">
+        <h1>🔐 لوحة التحكم</h1>
+        <p>أدخل كلمة المرور للوصول</p>
+        <input type="password" id="adminPassword" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter') login()">
+        <button onclick="login()">دخول</button>
+        <div class="error" id="errorMsg">❌ كلمة المرور غير صحيحة</div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== ٢. لوحة التحكم ===== -->
+    <!-- ========================================== -->
+    <div id="dashboardSection" class="dashboard-container">
+
+        <!-- الهيدر -->
+        <div class="dashboard-header">
+            <h1>📊 لوحة التحكم</h1>
+            <div class="btn-group">
+                <span class="admin-only">🔐 أنت المطور</span>
+                <button class="btn-add" onclick="showAddModal()">➕ إضافة مدرس</button>
+                <button class="btn-refresh" onclick="loadTeachers()">🔄 تحديث</button>
+                <button class="btn-logout" onclick="logout()">🚪 خروج</button>
+            </div>
+        </div>
+
+        <!-- الإحصائيات -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>👨‍🏫 عدد المدرسين</h3>
+                <div class="number" id="totalTeachers">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>⭐ عدد التقييمات</h3>
+                <div class="number" id="totalRatings">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>📚 عدد المواد</h3>
+                <div class="number" id="totalSubjects">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>💰 متوسط السعر</h3>
+                <div class="number" id="avgPrice">0 ج</div>
+            </div>
+        </div>
+
+        <!-- قائمة المدرسين -->
+        <div class="teacher-list">
+            <h2>📋 قائمة المدرسين</h2>
+            <div id="teachersList">
+                <div class="empty-msg">⏳ جاري التحميل...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== ٣. مودال إضافة/تعديل ===== -->
+    <!-- ========================================== -->
+    <div id="teacherModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">➕ إضافة مدرس جديد</h2>
+            <input type="hidden" id="editId">
+            <input type="text" id="teacherName" placeholder="اسم المدرس">
+            <input type="text" id="teacherSubject" placeholder="المادة (ماث، عربي، إنجليزي...)">
+            <select id="teacherStage">
+                <option value="ابتدائي">ابتدائي</option>
+                <option value="اعدادي">اعدادي</option>
+                <option value="ثانوي">ثانوي</option>
+            </select>
+            <input type="number" id="teacherPrice" placeholder="السعر (ج)">
+            <input type="text" id="teacherPhone" placeholder="رقم واتساب (مثال: 201012345678)">
+            <textarea id="teacherDescription" placeholder="وصف المدرس"></textarea>
+            <button class="btn-save" onclick="saveTeacher()">💾 حفظ</button>
+            <button class="btn-close" onclick="closeModal()">إلغاء</button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== ٤. Toast notification ===== -->
+    <!-- ========================================== -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ========================================== -->
+    <!-- ===== ٥. JavaScript ===== -->
+    <!-- ========================================== -->
+    <script>
+        // ==========================================
+        // ===== كلمة المرور =====
+        // ==========================================
+        const ADMIN_PASSWORD = "anas2026";
+
+        // ==========================================
+        // ===== ١. نظام الدخول =====
+        // ==========================================
+
+        // التحقق عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                showDashboard();
+            }
+        });
+
+        function login() {
+            const password = document.getElementById('adminPassword').value;
+            const error = document.getElementById('errorMsg');
+
+            if (password === ADMIN_PASSWORD) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                showDashboard();
+            } else {
+                error.style.display = 'block';
+                setTimeout(() => error.style.display = 'none', 3000);
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            loadTeachers();
+        }
+
+        function logout() {
+            if (confirm('⚠️ هل أنت متأكد من الخروج؟')) {
+                localStorage.removeItem('adminLoggedIn');
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('dashboardSection').style.display = 'none';
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        // ==========================================
+        // ===== ٢. بيانات المدرسين =====
+        // ==========================================
+
+        let teachers = [];
+
+        function loadTeachers() {
+            const saved = localStorage.getItem('adminTeachers');
+            if (saved) {
+                teachers = JSON.parse(saved);
+            } else {
+                // البيانات الافتراضية
+                teachers = [
+                    {id: 1, name: "أحمد محمد", subject: "ماث", stage: "ثانوي", price: 150, phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة"},
+                    {id: 2, name: "سارة علي", subject: "عربي", stage: "اعدادي", price: 120, phone: "201098765432", description: "أسلوب سلس وجذاب"},
+                    {id: 3, name: "محمد خالد", subject: "إنجليزي", stage: "ثانوي", price: 180, phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات"},
+                    {id: 4, name: "نورا أحمد", subject: "علوم", stage: "ابتدائي", price: 100, phone: "2010111222333", description: "شرح مبسط وجميل"},
+                    {id: 5, name: "كريم يوسف", subject: "فيزياء", stage: "ثانوي", price: 200, phone: "2010222333444", description: "مدرس فيزياء محترف"},
+                    {id: 6, name: "منى إبراهيم", subject: "كيمياء", stage: "ثانوي", price: 190, phone: "2010333444555", description: "شرح كيمياء بطريقة منظمة"},
+                    {id: 7, name: "عمر حسن", subject: "تاريخ", stage: "اعدادي", price: 110, phone: "2010444555666", description: "أسلوب قصصي ممتع"},
+                    {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stage: "اعدادي", price: 110, phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط"},
+                    {id: 9, name: "مصطفى رجب", subject: "ماث", stage: "اعدادي", price: 130, phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية"},
+                    {id: 10, name: "هدى سمير", subject: "إنجليزي", stage: "ابتدائي", price: 90, phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية"}
+                ];
+                saveTeachers();
+            }
+            renderTeachers();
+            updateStats();
+        }
+
+        function saveTeachers() {
+            localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+        }
+
+        // ==========================================
+        // ===== ٣. عرض المدرسين =====
+        // ==========================================
+
+        function renderTeachers() {
+            const container = document.getElementById('teachersList');
+
+            if (teachers.length === 0) {
+                container.innerHTML = '<div class="empty-msg">📭 لا يوجد مدرسين حالياً</div>';
+                return;
+            }
+
+            // جلب التقييمات من localStorage
+            let ratings = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('rated_')) {
+                    const teacherId = key.replace('rated_', '');
+                    try {
+                        ratings[teacherId] = JSON.parse(localStorage.getItem(key));
+                    } catch {}
+                }
+            }
+
+            container.innerHTML = teachers.map(t => {
+                const teacherRatings = ratings[t.id];
+                const ratingValue = teacherRatings ? teacherRatings.rating : 'لا يوجد';
+                const ratingCount = teacherRatings ? 1 : 0;
+
+                return `
+                    <div class="teacher-item">
+                        <div class="info">
+                            <strong>${t.name}</strong>
+                            <span>📚 ${t.subject}</span>
+                            <span>📌 ${t.stage}</span>
+                            <span>💰 ${t.price} ج</span>
+                            <span>⭐ ${ratingValue} (${ratingCount} تقييم)</span>
+                            <span>📱 ${t.phone}</span>
+                        </div>
+                        <div class="actions">
+                            <button class="btn-edit" onclick="editTeacher(${t.id})">✏️ تعديل</button>
+                            <button class="btn-delete" onclick="deleteTeacher(${t.id})">🗑️ حذف</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================
+        // ===== ٤. الإحصائيات =====
+        // ==========================================
+
+        function updateStats() {
+            document.getElementById('totalTeachers').textContent = teachers.length;
+
+            const subjects = new Set(teachers.map(t => t.subject));
+            document.getElementById('totalSubjects').textContent = subjects.size;
+
+            if (teachers.length > 0) {
+                const avg = teachers.reduce((sum, t) => sum + t.price, 0) / teachers.length;
+                document.getElementById('avgPrice').textContent = Math.round(avg) + ' ج';
+            }
+
+            let totalRatings = 0;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('rated_')) {
+                    totalRatings++;
+                }
+            }
+            document.getElementById('totalRatings').textContent = totalRatings;
+        }
+
+        // ==========================================
+        // ===== ٥. إضافة وتعديل وحذف =====
+        // ==========================================
+
+        function showAddModal() {
+            document.getElementById('modalTitle').textContent = '➕ إضافة مدرس جديد';
+            document.getElementById('editId').value = '';
+            document.getElementById('teacherName').value = '';
+                      document.getElementById('teacherSubject').value = '';
+            document.getElementById('teacherStage').value = 'ابتدائي';
+            document.getElementById('teacherPrice').value = '';
+            document.getElementById('teacherPhone').value = '';
+            document.getElementById('teacherDescription').value = '';
+            document.getElementById('teacherModal').style.display = 'block';
+        }
+
+        function editTeacher(id) {
+            const teacher = teachers.find(t => t.id === id);
+            if (!teacher) return;
+
+            document.getElementById('modalTitle').textContent = '✏️ تعديل مدرس';
+            document.getElementById('editId').value = id;
+            document.getElementById('teacherName').value = teacher.name;
+            document.getElementById('teacherSubject').value = teacher.subject;
+            document.getElementById('teacherStage').value = teacher.stage;
+            document.getElementById('teacherPrice').value = teacher.price;
+            document.getElementById('teacherPhone').value = teacher.phone;
+            document.getElementById('teacherDescription').value = teacher.description || '';
+            document.getElementById('teacherModal').style.display = 'block';
+        }
+
+        function saveTeacher() {
+            const id = document.getElementById('editId').value;
+            const name = document.getElementById('teacherName').value.trim();
+            const subject = document.getElementById('teacherSubject').value.trim();
+            const stage = document.getElementById('teacherStage').value;
+            const price = parseInt(document.getElementById('teacherPrice').value);
+            const phone = document.getElementById('teacherPhone').value.trim();
+            const description = document.getElementById('teacherDescription').value.trim();
+
+            if (!name || !subject || !price || !phone) {
+                showToast('❌ يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+
+            if (id) {
+                // تعديل مدرس موجود
+                const index = teachers.findIndex(t => t.id == id);
+                if (index !== -1) {
+                    teachers[index] = { ...teachers[index], name, subject, stage, price, phone, description };
+                }
+            } else {
+                // إضافة مدرس جديد
+                const newId = Math.max(...teachers.map(t => t.id), 0) + 1;
+                teachers.push({ id: newId, name, subject, stage, price, phone, description });
+            }
+
+            saveTeachers();
+            renderTeachers();
+            updateStats();
+            closeModal();
+            showToast('✅ تم الحفظ بنجاح', 'success');
+        }
+
+        function deleteTeacher(id) {
+            const teacher = teachers.find(t => t.id === id);
+            if (!teacher) return;
+
+            if (confirm(`⚠️ هل أنت متأكد من حذف المدرس "${teacher.name}"؟`)) {
+                teachers = teachers.filter(t => t.id !== id);
+                saveTeachers();
+                renderTeachers();
+                updateStats();
+                showToast('✅ تم الحذف بنجاح', 'success');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('teacherModal').style.display = 'none';
+        }
+
+        // ==========================================
+        // ===== ٦. Toast notification =====
+        // ==========================================
+
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + (type || '');
+            toast.style.display = 'block';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // ==========================================
+        // ===== ٧. إغلاق المودال بالضغط خارجها =====
+        // ==========================================
+
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('teacherModal')) {
+                closeModal();
+            }
+        }
+
+        console.log('🔐 لوحة التحكم - أنت المطور');
+        console.log('📊 عدد المدرسين:', teachers.length);
+    </script>
+
+</body>
+</html>
