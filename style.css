@@ -193,6 +193,26 @@ header p {
     transform: scale(1.02);
 }
 
+.share-btn {
+    display: inline-block;
+    background: #1a2a6c;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 8px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.share-btn:hover {
+    background: #2d4373;
+    transform: scale(1.02);
+}
+
 footer {
     text-align: center;
     padding: 30px;
