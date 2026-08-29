@@ -58,24 +58,22 @@ function loadTeachers() {
     if (saved) {
         teachers = JSON.parse(saved);
     } else {
-        // البيانات الافتراضية
+        // البيانات الافتراضية مع المراحل المتعددة والقيمة
         teachers = [
-            {id: 1, name: "أحمد محمد", subject: "ماث", stage: "ثانوي", price: 150, phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23},
-            {id: 2, name: "سارة علي", subject: "عربي", stage: "اعدادي", price: 120, phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31},
-            {id: 3, name: "محمد خالد", subject: "إنجليزي", stage: "ثانوي", price: 180, phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18},
-            {id: 4, name: "نورا أحمد", subject: "علوم", stage: "ابتدائي", price: 100, phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15},
-            {id: 5, name: "كريم يوسف", subject: "فيزياء", stage: "ثانوي", price: 200, phone: "2010222333444", description: "مدرس فيزياء محترف", rating: 4.9, totalRatings: 27},
-            {id: 6, name: "منى إبراهيم", subject: "كيمياء", stage: "ثانوي", price: 190, phone: "2010333444555", description: "شرح كيمياء بطريقة منظمة", rating: 4.5, totalRatings: 12},
-            {id: 7, name: "عمر حسن", subject: "تاريخ", stage: "اعدادي", price: 110, phone: "2010444555666", description: "أسلوب قصصي ممتع", rating: 4.3, totalRatings: 9},
-            {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stage: "اعدادي", price: 110, phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط", rating: 4.4, totalRatings: 11},
-            {id: 9, name: "مصطفى رجب", subject: "ماث", stage: "اعدادي", price: 130, phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية", rating: 4.2, totalRatings: 14},
-            {id: 10, name: "هدى سمير", subject: "إنجليزي", stage: "ابتدائي", price: 90, phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22},
-            
-            // المواد الجديدة
-            {id: 11, name: "ياسر محمود", subject: "اداره اعمال", stage: "ثانوي", price: 160, phone: "2010888999000", description: "خبير في إدارة الأعمال والتسويق", rating: 4.7, totalRatings: 8},
-            {id: 12, name: "نهى سامي", subject: "محاسبه", stage: "ثانوي", price: 170, phone: "2010999000111", description: "خبرة في المحاسبة المالية والتدقيق", rating: 4.6, totalRatings: 6},
-            {id: 13, name: "عادل فكري", subject: "فلسفه", stage: "ثانوي", price: 140, phone: "2010100011122", description: "شرح الفلسفة بأسلوب مبسط ومشوق", rating: 4.8, totalRatings: 10},
-            {id: 14, name: "شيماء أحمد", subject: "برمجه", stage: "ثانوي", price: 200, phone: "2010111122233", description: "مبرمجة محترفة، تدرس Python و JavaScript", rating: 4.9, totalRatings: 15}
+            {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], pricePerSession: 150, phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 4.8, totalRatings: 23},
+            {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], pricePerSession: 120, phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 4.9, totalRatings: 31},
+            {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], pricePerSession: 180, phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 4.7, totalRatings: 18},
+            {id: 4, name: "نورا أحمد", subject: "علوم", stages: ["ابتدائي", "اعدادي"], pricePerSession: 100, phone: "2010111222333", description: "شرح مبسط وجميل", rating: 4.6, totalRatings: 15},
+            {id: 5, name: "كريم يوسف", subject: "فيزياء", stages: ["ثانوي"], pricePerSession: 200, phone: "2010222333444", description: "مدرس فيزياء محترف", rating: 4.9, totalRatings: 27},
+            {id: 6, name: "منى إبراهيم", subject: "كيمياء", stages: ["ثانوي"], pricePerSession: 190, phone: "2010333444555", description: "شرح كيمياء بطريقة منظمة", rating: 4.5, totalRatings: 12},
+            {id: 7, name: "عمر حسن", subject: "تاريخ", stages: ["اعدادي", "ثانوي"], pricePerSession: 110, phone: "2010444555666", description: "أسلوب قصصي ممتع", rating: 4.3, totalRatings: 9},
+            {id: 8, name: "ليلى عبدالله", subject: "جغرافيا", stages: ["اعدادي"], pricePerSession: 110, phone: "2010555666777", description: "شرح جغرافيا باستخدام الخرائط", rating: 4.4, totalRatings: 11},
+            {id: 9, name: "مصطفى رجب", subject: "ماث", stages: ["اعدادي"], pricePerSession: 130, phone: "2010666777888", description: "مدرس ماث ممتاز للمرحلة الإعدادية", rating: 4.2, totalRatings: 14},
+            {id: 10, name: "هدى سمير", subject: "إنجليزي", stages: ["ابتدائي", "اعدادي"], pricePerSession: 90, phone: "2010777888999", description: "بتعلم الأطفال الإنجليزية بطريقة تفاعلية", rating: 4.7, totalRatings: 22},
+            {id: 11, name: "ياسر محمود", subject: "اداره اعمال", stages: ["ثانوي"], pricePerSession: 160, phone: "2010888999000", description: "خبير في إدارة الأعمال والتسويق", rating: 4.7, totalRatings: 8},
+            {id: 12, name: "نهى سامي", subject: "محاسبه", stages: ["ثانوي"], pricePerSession: 170, phone: "2010999000111", description: "خبرة في المحاسبة المالية والتدقيق", rating: 4.6, totalRatings: 6},
+            {id: 13, name: "عادل فكري", subject: "فلسفه", stages: ["ثانوي"], pricePerSession: 140, phone: "2010100011122", description: "شرح الفلسفة بأسلوب مبسط ومشوق", rating: 4.8, totalRatings: 10},
+            {id: 14, name: "شيماء أحمد", subject: "برمجه", stages: ["ثانوي"], pricePerSession: 200, phone: "2010111122233", description: "مبرمجة محترفة، تدرس Python و JavaScript", rating: 4.9, totalRatings: 15}
         ];
         localStorage.setItem('adminTeachers', JSON.stringify(teachers));
     }
@@ -83,14 +81,21 @@ function loadTeachers() {
 }
 
 // ==========================================
-// ===== ٣. عرض المدرسين =====
+// ===== ٣. عرض المدرسين (مرتب حسب التقييم) =====
 // ==========================================
 
 function displayTeachers(teachersList) {
+    // ترتيب المدرسين حسب التقييم (الأعلى أولاً)
+    const sorted = [...teachersList].sort((a, b) => {
+        const ratingA = a.rating || 0;
+        const ratingB = b.rating || 0;
+        return ratingB - ratingA;
+    });
+
     const container = document.getElementById('teachers-container');
     container.innerHTML = '';
 
-    if (!teachersList || teachersList.length === 0) {
+    if (!sorted || sorted.length === 0) {
         container.innerHTML = '<div class="no-results">😕 لا يوجد مدرسين حالياً</div>';
         return;
     }
@@ -107,20 +112,26 @@ function displayTeachers(teachersList) {
         }
     }
 
-    teachersList.forEach(teacher => {
+    sorted.forEach(teacher => {
         const teacherRating = ratings[teacher.id];
         const displayRating = teacherRating ? teacherRating.rating : (teacher.rating || 0);
         const displayTotal = teacherRating ? 1 : (teacher.totalRatings || 0);
+        
+        // عرض المراحل (بدلاً من مرحلة واحدة)
+        const stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : teacher.stage || '';
 
         const card = `
             <div class="teacher-card">
                 <div class="avatar">${teacher.name.charAt(0)}</div>
                 <h3>${teacher.name}</h3>
                 <div class="subject">📚 ${teacher.subject}</div>
-                <div class="stage-badge">📌 ${teacher.stage}</div>
                 <div class="detail">
-                    <span>💰 السعر</span>
-                    <span class="price">${teacher.price} ج / ساعة</span>
+                    <span>📌 المراحل</span>
+                    <span>${stagesDisplay}</span>
+                </div>
+                <div class="detail">
+                    <span>💰 القيمة</span>
+                    <span class="price">${teacher.pricePerSession} ج / حصة</span>
                 </div>
                 <div class="detail">
                     <span>⭐ التقييم</span>
@@ -141,18 +152,7 @@ function displayTeachers(teachersList) {
                     ⭐ قيم المدرس
                 </button>
 
-                <!-- زر مشاركة المنصة -->
-                <button class="share-btn" onclick="sharePlatform(${teacher.id})" style="
-                    background: #1a2a6c;
-                    color: white;
-                    padding: 8px 15px;
-                    border: none;
-                    border-radius: 30px;
-                    cursor: pointer;
-                    margin-top: 8px;
-                    width: 100%;
-                    font-weight: bold;
-                ">
+                <button class="share-btn" onclick="sharePlatform(${teacher.id})">
                     📢 شارك المنصة مع طلابك وأولياء الأمور
                 </button>
             </div>
@@ -162,7 +162,7 @@ function displayTeachers(teachersList) {
 }
 
 // ==========================================
-// ===== ٤. فلتر البحث =====
+// ===== ٤. فلتر البحث (مرتب حسب التقييم) =====
 // ==========================================
 
 function filterTeachers() {
@@ -172,13 +172,20 @@ function filterTeachers() {
 
     const filtered = teachers.filter(teacher => {
         const matchSearch = teacher.name.includes(searchText) || teacher.subject.includes(searchText);
-        const matchStage = stageFilter === 'all' || teacher.stage === stageFilter;
+        const matchStage = stageFilter === 'all' || (teacher.stages && teacher.stages.includes(stageFilter));
         const matchSubject = subjectFilter === 'all' || teacher.subject === subjectFilter;
 
         return matchSearch && matchStage && matchSubject;
     });
 
-    displayTeachers(filtered);
+    // ترتيب النتائج حسب التقييم (الأعلى أولاً)
+    const sorted = [...filtered].sort((a, b) => {
+        const ratingA = a.rating || 0;
+        const ratingB = b.rating || 0;
+        return ratingB - ratingA;
+    });
+
+    displayTeachers(sorted);
 }
 
 // ==========================================
