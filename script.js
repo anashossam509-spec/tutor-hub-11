@@ -344,10 +344,7 @@ function rateTeacher(teacherId) {
     alert(`✅ شكراً لتقييمك!\nالتقييم الجديد للمدرس ${teacher.name}: ${teacher.rating} من ٥`);
 
     displayTeachers(teachers);
-}
 
-console.log('🛡️ نظام الحماية مفعل بنجاح');
-console.log('📊 عدد المدرسين:', teachers.length);
 // ==========================================
 // ===== لوحة التحكم (بكلمة مرور) =====
 // ==========================================
