@@ -236,7 +236,7 @@ function showAdminPanel() {
     const password = prompt("🔐 أدخل كلمة المرور للوصول إلى لوحة التحكم:");
     if (password === null) return;
 
-    if (password === "aaaaa") {
+    if (password === "PHP123") {
         window.location.href = 'admin.html';
     } else {
         alert('❌ كلمة المرور غير صحيحة!');
