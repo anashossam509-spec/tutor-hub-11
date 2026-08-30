@@ -340,6 +340,10 @@ function showAdminPanel() {
 document.addEventListener('DOMContentLoaded', function() {
     loadTeachers();
 });
+// تحديث البيانات كل 10 ثواني
+setInterval(function() {
+    refreshData();
+}, 10000); // 10000 ملي ثانية = 10 ثواني
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
