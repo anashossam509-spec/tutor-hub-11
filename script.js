@@ -1,3 +1,4 @@
+
 // ==========================================
 // ===== ١. منع التلاعب (الحماية) =====
 // ==========================================
@@ -275,15 +276,6 @@ function filterTeachers() {
 // ===== ٧. نظام التقييم =====
 // ==========================================
 
-// رسالة التقييم المختصرة
-function getRatingMessage(teacherName, subject) {
-    return `⭐ قيموني على Teachers Hub عشان أوصل لأكبر عدد من الطلاب 🙏📚\n\n👩‍🏫 المدرس: ${teacherName}\n📚 المادة: ${subject}\n🔗 الرابط: ${window.location.href}`;
-}
-
-// مثال: رسالة لبسمة السيد
-const message = getRatingMessage("بسمة السيد", "تأسيس");
-console.log(message);
-
 async function rateTeacher(teacherId) {
     const teacher = teachers.find(t => t.id === teacherId);
     if (!teacher) return;
@@ -401,3 +393,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
+```
