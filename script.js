@@ -1,5 +1,6 @@
+// امسح كل حاجة وحط الكود ده
 // ==========================================
-// ===== ١. منع التلاعب (الحماية) =====
+// ===== ١. منع التلاعب =====
 // ==========================================
 
 document.addEventListener('contextmenu', function(e) {
@@ -42,7 +43,7 @@ document.onselectstart = function() {
 };
 
 // ==========================================
-// ===== ٢. تهيئة JSON Bin (API الصحيح) =====
+// ===== ٢. تهيئة JSON Bin =====
 // ==========================================
 
 const JSONBIN_BIN_ID = '6a936a6cf5f4af5e295310fe';
@@ -148,11 +149,7 @@ async function loadTeachers() {
                     await saveTeachersToCloud(teachers);
                 }
             } else {
-                teachers = [
-                    {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 0, totalRatings: 0, video: ""},
-                    {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 0, totalRatings: 0, video: ""},
-                    {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 0, totalRatings: 0, video: ""}
-                ];
+                teachers = [];
                 localStorage.setItem('adminTeachers', JSON.stringify(teachers));
                 await saveTeachersToCloud(teachers);
             }
