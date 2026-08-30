@@ -284,19 +284,7 @@ async function rateTeacher(teacherId) {
     const ratings = await getRatings();
 
     if (ratings[teacherId] && ratings[teacherId][userPhone]) {
-        const data = ratings[teacherId][userPhone];
-        const date = new Date(data.date).toLocaleString('ar-EG', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        alert(
-            `❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!\n` +
-            `📅 التاريخ: ${date}\n` +
-            `⭐ التقييم: ${data.rating} من ٥`
-        );
+        alert(`❌ لقد قيمت هذا المدرس بالفعل`);
         return;
     }
 
@@ -335,7 +323,7 @@ async function rateTeacher(teacherId) {
         await saveTeachersToCloud(teachers);
     }
 
-    alert(`✅ شكراً لتقييمك!`);
+    alert(`✅ شكراً لتقييمكم`);
     displayTeachers(teachers);
 }
 
