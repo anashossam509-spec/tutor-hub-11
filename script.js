@@ -1,6 +1,5 @@
-// امسح كل حاجة وحط الكود ده
 // ==========================================
-// ===== ١. منع التلاعب =====
+// ===== ١. منع التلاعب (الحماية) =====
 // ==========================================
 
 document.addEventListener('contextmenu', function(e) {
@@ -48,7 +47,7 @@ document.onselectstart = function() {
 
 const JSONBIN_BIN_ID = '6a936a6cf5f4af5e295310fe';
 const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
-const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
 
 console.log('✅ JSON Bin connected successfully');
 
@@ -173,13 +172,13 @@ function saveTeachers() {
 // ==========================================
 
 function displayTeachers(teachersList) {
-    const sorted = [...teachersList].sort((a, b) => {
-        const ratingA = a.rating || 0;
-        const ratingB = b.rating || 0;
+    var sorted = teachersList.slice().sort(function(a, b) {
+        var ratingA = a.rating || 0;
+        var ratingB = b.rating || 0;
         return ratingB - ratingA;
     });
 
-    const container = document.getElementById('teachers-container');
+    var container = document.getElementById('teachers-container');
     container.innerHTML = '';
 
     if (!sorted || sorted.length === 0) {
@@ -187,60 +186,25 @@ function displayTeachers(teachersList) {
         return;
     }
 
-    sorted.forEach(teacher => {
-        const stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : '';
+    sorted.forEach(function(teacher) {
+        var stagesDisplay = teacher.stages ? teacher.stages.join(' - ') : '';
 
-        const videoButton = teacher.video ? `
-            <a href="${teacher.video}" target="_blank" class="video-btn" style="
-                display: inline-block;
-                background: #ff0000;
-                color: white;
-                padding: 8px 15px;
-                border-radius: 30px;
-                text-decoration: none;
-                font-weight: bold;
-                margin-top: 8px;
-                width: 100%;
-                text-align: center;
-                transition: 0.3s;
-                border: none;
-                cursor: pointer;
-                font-size: 0.95rem;
-            ">
-                🎬 فيديو تعريفي عن المدرس
-            </a>
-        ` : '';
+        var videoButton = teacher.video ? '<a href="' + teacher.video + '" target="_blank" class="video-btn" style="display: inline-block; background: #ff0000; color: white; padding: 8px 15px; border-radius: 30px; text-decoration: none; font-weight: bold; margin-top: 8px; width: 100%; text-align: center; transition: 0.3s; border: none; cursor: pointer; font-size: 0.95rem;">🎬 فيديو تعريفي عن المدرس</a>' : '';
 
-        const card = `
-            <div class="teacher-card">
-                <div class="avatar">${teacher.name.charAt(0)}</div>
-                <h3>${teacher.name}</h3>
-                <div class="subject">📚 ${teacher.subject}</div>
-                <div class="stage-badge">📌 ${stagesDisplay}</div>
-                <div class="detail">
-                    <span>⭐ التقييم</span>
-                    <span class="rating">${teacher.rating || 0} (${teacher.totalRatings || 0} تقييم)</span>
-                </div>
-                <div class="detail" style="border-bottom: none;">
-                    <span>📱 واتساب</span>
-                    <span class="phone">${teacher.phone}</span>
-                </div>
-                <p style="font-size:0.9rem;color:#7f8c8d;margin:10px 0;text-align:right;">📝 ${teacher.description || ''}</p>
-                
-                ${videoButton}
-                
-                <a href="https://wa.me/${teacher.phone}?text=السلام%20عليكم%20أستاذ%20${encodeURIComponent(teacher.name)}،%20أنا%20جيت%20من%20منصة%20Teachers%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" 
-                   class="whatsapp-btn" target="_blank">
-                    📱 تواصل مع المدرس
-                </a>
-                <button class="rate-btn" onclick="rateTeacher(${teacher.id})">
-                    ⭐ قيم المدرس
-                </button>
-                <button class="share-btn" onclick="sharePlatform(${teacher.id})">
-                    📢 شارك المنصة مع طلابك وأولياء الأمور
-                </button>
-            </div>
-        `;
+        var card = '<div class="teacher-card">' +
+            '<div class="avatar">' + teacher.name.charAt(0) + '</div>' +
+            '<h3>' + teacher.name + '</h3>' +
+            '<div class="subject">📚 ' + teacher.subject + '</div>' +
+            '<div class="stage-badge">📌 ' + stagesDisplay + '</div>' +
+            '<div class="detail"><span>⭐ التقييم</span><span class="rating">' + (teacher.rating || 0) + ' (' + (teacher.totalRatings || 0) + ' تقييم)</span></div>' +
+            '<div class="detail" style="border-bottom: none;"><span>📱 واتساب</span><span class="phone">' + teacher.phone + '</span></div>' +
+            '<p style="font-size:0.9rem;color:#7f8c8d;margin:10px 0;text-align:right;">📝 ' + (teacher.description || '') + '</p>' +
+            videoButton +
+            '<a href="https://wa.me/' + teacher.phone + '?text=السلام%20عليكم%20أستاذ%20' + encodeURIComponent(teacher.name) + '،%20أنا%20جيت%20من%20منصة%20Teachers%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" class="whatsapp-btn" target="_blank">📱 تواصل مع المدرس</a>' +
+            '<button class="rate-btn" onclick="rateTeacher(' + teacher.id + ')">⭐ قيم المدرس</button>' +
+            '<button class="share-btn" onclick="sharePlatform(' + teacher.id + ')">📢 شارك المنصة مع طلابك وأولياء الأمور</button>' +
+            '</div>';
+
         container.innerHTML += card;
     });
 }
@@ -250,22 +214,22 @@ function displayTeachers(teachersList) {
 // ==========================================
 
 function filterTeachers() {
-    const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
-    const stageFilter = document.getElementById('stageFilter').value;
-    const subjectFilter = document.getElementById('subjectFilter').value;
+    var searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+    var stageFilter = document.getElementById('stageFilter').value;
+    var subjectFilter = document.getElementById('subjectFilter').value;
 
-    const filtered = teachers.filter(teacher => {
-        const matchSearch = teacher.name.toLowerCase().includes(searchText) || 
-                           teacher.subject.toLowerCase().includes(searchText);
-        const matchStage = stageFilter === 'all' || (teacher.stages && teacher.stages.includes(stageFilter));
-        const matchSubject = subjectFilter === 'all' || teacher.subject === subjectFilter;
+    var filtered = teachers.filter(function(teacher) {
+        var matchSearch = teacher.name.toLowerCase().includes(searchText) || 
+                         teacher.subject.toLowerCase().includes(searchText);
+        var matchStage = stageFilter === 'all' || (teacher.stages && teacher.stages.includes(stageFilter));
+        var matchSubject = subjectFilter === 'all' || teacher.subject === subjectFilter;
 
         return matchSearch && matchStage && matchSubject;
     });
 
-    const sorted = [...filtered].sort((a, b) => {
-        const ratingA = a.rating || 0;
-        const ratingB = b.rating || 0;
+    var sorted = filtered.slice().sort(function(a, b) {
+        var ratingA = a.rating || 0;
+        var ratingB = b.rating || 0;
         return ratingB - ratingA;
     });
 
@@ -277,10 +241,10 @@ function filterTeachers() {
 // ==========================================
 
 async function rateTeacher(teacherId) {
-    const teacher = teachers.find(t => t.id === teacherId);
+    var teacher = teachers.find(function(t) { return t.id === teacherId; });
     if (!teacher) return;
 
-    let userPhone = localStorage.getItem('userPhone');
+    var userPhone = localStorage.getItem('userPhone');
     if (!userPhone) {
         userPhone = prompt("📱 أدخل رقم واتسابك (مثال: 201012345678) لتقييم المدرس:");
         if (!userPhone) {
@@ -290,34 +254,26 @@ async function rateTeacher(teacherId) {
         localStorage.setItem('userPhone', userPhone);
     }
 
-    const ratings = await getRatings();
+    var ratings = await getRatings();
 
     if (ratings[teacherId] && ratings[teacherId][userPhone]) {
-        const data = ratings[teacherId][userPhone];
-        const date = new Date(data.date).toLocaleString('ar-EG', {
+        var data = ratings[teacherId][userPhone];
+        var date = new Date(data.date).toLocaleString('ar-EG', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
         });
-        alert(
-            `❌ لقد قيمت الأستاذ ${teacher.name} بالفعل!\n` +
-            `📅 التاريخ: ${date}\n` +
-            `⭐ التقييم: ${data.rating} من ٥`
-        );
+        alert('❌ لقد قيمت الأستاذ ' + teacher.name + ' بالفعل!\n📅 التاريخ: ' + date + '\n⭐ التقييم: ' + data.rating + ' من ٥');
         return;
     }
 
-    const rating = prompt(
-        `⭐ قيم المدرس ${teacher.name}\n` +
-        `(١ = سيء جداً، ٢ = سيء، ٣ = متوسط، ٤ = جيد، ٥ = ممتاز)\n` +
-        `أدخل رقم من ١ إلى ٥:`
-    );
+    var rating = prompt('⭐ قيم المدرس ' + teacher.name + '\n(١ = سيء جداً، ٢ = سيء، ٣ = متوسط، ٤ = جيد، ٥ = ممتاز)\nأدخل رقم من ١ إلى ٥:');
 
     if (rating === null) return;
 
-    const ratingNum = parseInt(rating);
+    var ratingNum = parseInt(rating);
     if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
         alert('❌ يرجى إدخال رقم صحيح بين ١ و ٥');
         return;
@@ -331,12 +287,12 @@ async function rateTeacher(teacherId) {
 
     await saveRatings(ratings);
 
-    const values = Object.values(ratings[teacherId]).map(r => r.rating);
-    const avg = values.reduce((a, b) => a + b, 0) / values.length;
-    const total = values.length;
+    var values = Object.values(ratings[teacherId]).map(function(r) { return r.rating; });
+    var avg = values.reduce(function(a, b) { return a + b; }, 0) / values.length;
+    var total = values.length;
 
     teachers = await getTeachersFromCloud();
-    const index = teachers.findIndex(t => t.id === teacherId);
+    var index = teachers.findIndex(function(t) { return t.id === teacherId; });
     if (index !== -1) {
         teachers[index].rating = Math.round(avg * 10) / 10;
         teachers[index].totalRatings = total;
@@ -344,7 +300,7 @@ async function rateTeacher(teacherId) {
         await saveTeachersToCloud(teachers);
     }
 
-    alert(`✅ شكراً لتقييمكم`);
+    alert('✅ شكراً لتقييمكم');
     displayTeachers(teachers);
 }
 
@@ -353,19 +309,13 @@ async function rateTeacher(teacherId) {
 // ==========================================
 
 function sharePlatform(teacherId) {
-    const teacher = teachers.find(t => t.id === teacherId);
+    var teacher = teachers.find(function(t) { return t.id === teacherId; });
     if (!teacher) return;
 
-    const url = window.location.href;
-    const message = 
-        `📚 أنا المدرس ${teacher.name} على منصة Teachers Hub\n` +
-        `شوفوا تقييماتي وتواصلوا معي:\n` +
-        `${url}\n\n` +
-        `👨‍🎓 للطلاب: قيموا مدرسكم وساعدوه يظهر في المنصة\n` +
-        `👨‍👩‍👦 لأولياء الأمور: شوفوا التقييمات وتواصلوا مع أفضل المدرسين\n` +
-        `👨‍🏫 للمدرسين: سجلوا في المنصة ووصلوا لأكبر عدد من الطلاب`;
+    var url = window.location.href;
+    var message = '📚 أنا المدرس ' + teacher.name + ' على منصة Teachers Hub\nشوفوا تقييماتي وتواصلوا معي:\n' + url + '\n\n👨‍🎓 للطلاب: قيموا مدرسكم وساعدوه يظهر في المنصة\n👨‍👩‍👦 لأولياء الأمور: شوفوا التقييمات وتواصلوا مع أفضل المدرسين\n👨‍🏫 للمدرسين: سجلوا في المنصة ووصلوا لأكبر عدد من الطلاب';
 
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+    window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank');
 }
 
 // ==========================================
@@ -373,7 +323,7 @@ function sharePlatform(teacherId) {
 // ==========================================
 
 function showAdminPanel() {
-    const password = prompt("🔐 أدخل كلمة المرور للوصول إلى لوحة التحكم:");
+    var password = prompt("🔐 أدخل كلمة المرور للوصول إلى لوحة التحكم:");
     if (password === null) return;
 
     if (password === "php123") {
