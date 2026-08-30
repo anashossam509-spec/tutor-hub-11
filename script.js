@@ -1,4 +1,3 @@
-
 // ==========================================
 // ===== ١. منع التلاعب (الحماية) =====
 // ==========================================
@@ -149,7 +148,11 @@ async function loadTeachers() {
                     await saveTeachersToCloud(teachers);
                 }
             } else {
-                teachers = [];
+                teachers = [
+                    {id: 1, name: "أحمد محمد", subject: "ماث", stages: ["اعدادي", "ثانوي"], phone: "201012345678", description: "شرح ممتاز ومنهجية واضحة", rating: 0, totalRatings: 0, video: ""},
+                    {id: 2, name: "سارة علي", subject: "عربي", stages: ["ابتدائي", "اعدادي", "ثانوي"], phone: "201098765432", description: "أسلوب سلس وجذاب", rating: 0, totalRatings: 0, video: ""},
+                    {id: 3, name: "محمد خالد", subject: "إنجليزي", stages: ["اعدادي", "ثانوي"], phone: "2010555666777", description: "خبرة في التدريس لأكثر من ٥ سنوات", rating: 0, totalRatings: 0, video: ""}
+                ];
                 localStorage.setItem('adminTeachers', JSON.stringify(teachers));
                 await saveTeachersToCloud(teachers);
             }
@@ -393,4 +396,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
-```
