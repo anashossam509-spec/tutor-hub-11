@@ -120,6 +120,7 @@ async function saveTeachersToCloud(teachersData) {
             },
             body: JSON.stringify(currentData)
         });
+        console.log('✅ Teachers saved successfully');
     } catch (error) {
         console.error('Error saving teachers:', error);
     }
@@ -132,26 +133,32 @@ async function saveTeachersToCloud(teachersData) {
 let teachers = [];
 
 async function loadTeachers() {
-    const cloudTeachers = await getTeachersFromCloud();
+    try {
+        const cloudTeachers = await getTeachersFromCloud();
 
-    if (cloudTeachers && cloudTeachers.length > 0) {
-        teachers = cloudTeachers;
-        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-    } else {
-        const saved = localStorage.getItem('adminTeachers');
-        if (saved) {
-            teachers = JSON.parse(saved);
-            if (teachers.length > 0) {
+        if (cloudTeachers && cloudTeachers.length > 0) {
+            teachers = cloudTeachers;
+            localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+        } else {
+            const saved = localStorage.getItem('adminTeachers');
+            if (saved) {
+                teachers = JSON.parse(saved);
+                if (teachers.length > 0) {
+                    await saveTeachersToCloud(teachers);
+                }
+            } else {
+                teachers = [];
+                localStorage.setItem('adminTeachers', JSON.stringify(teachers));
                 await saveTeachersToCloud(teachers);
             }
-        } else {
-            teachers = [];
-            localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-            await saveTeachersToCloud(teachers);
         }
-    }
 
-    displayTeachers(teachers);
+        displayTeachers(teachers);
+    } catch (error) {
+        console.error('Error loading teachers:', error);
+        teachers = [];
+        displayTeachers(teachers);
+    }
 }
 
 function saveTeachers() {
