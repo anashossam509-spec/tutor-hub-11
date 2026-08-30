@@ -1,4 +1,3 @@
-
 // ==========================================
 // ===== ١. منع التلاعب (الحماية) =====
 // ==========================================
@@ -86,7 +85,6 @@ async function saveRatings(ratings) {
             },
             body: JSON.stringify(currentData)
         });
-        console.log('✅ Ratings saved successfully');
     } catch (error) {
         console.error('Error saving ratings:', error);
     }
@@ -122,7 +120,6 @@ async function saveTeachersToCloud(teachersData) {
             },
             body: JSON.stringify(currentData)
         });
-        console.log('✅ Teachers saved successfully');
     } catch (error) {
         console.error('Error saving teachers:', error);
     }
@@ -135,32 +132,26 @@ async function saveTeachersToCloud(teachersData) {
 let teachers = [];
 
 async function loadTeachers() {
-    try {
-        const cloudTeachers = await getTeachersFromCloud();
+    const cloudTeachers = await getTeachersFromCloud();
 
-        if (cloudTeachers && cloudTeachers.length > 0) {
-            teachers = cloudTeachers;
-            localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-        } else {
-            const saved = localStorage.getItem('adminTeachers');
-            if (saved) {
-                teachers = JSON.parse(saved);
-                if (teachers.length > 0) {
-                    await saveTeachersToCloud(teachers);
-                }
-            } else {
-                teachers = [];
-                localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+    if (cloudTeachers && cloudTeachers.length > 0) {
+        teachers = cloudTeachers;
+        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+    } else {
+        const saved = localStorage.getItem('adminTeachers');
+        if (saved) {
+            teachers = JSON.parse(saved);
+            if (teachers.length > 0) {
                 await saveTeachersToCloud(teachers);
             }
+        } else {
+            teachers = [];
+            localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+            await saveTeachersToCloud(teachers);
         }
-
-        displayTeachers(teachers);
-    } catch (error) {
-        console.error('Error loading teachers:', error);
-        teachers = [];
-        displayTeachers(teachers);
     }
+
+    displayTeachers(teachers);
 }
 
 function saveTeachers() {
@@ -393,4 +384,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
-```
