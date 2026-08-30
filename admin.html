@@ -359,7 +359,6 @@
 </head>
 <body>
 
-    <!-- ===== صفحة الدخول ===== -->
     <div id="loginSection" class="login-box">
         <h1>🔐 لوحة التحكم</h1>
         <p>أدخل كلمة المرور للوصول</p>
@@ -368,7 +367,6 @@
         <div class="error" id="errorMsg">❌ كلمة المرور غير صحيحة</div>
     </div>
 
-    <!-- ===== لوحة التحكم ===== -->
     <div id="dashboardSection" class="dashboard-container">
         <div class="dashboard-header">
             <h1>📊 لوحة التحكم</h1>
@@ -406,7 +404,6 @@
             </div>
         </div>
 
-        <!-- ===== قسم إدارة التقييمات ===== -->
         <div class="teacher-list" style="margin-top: 30px;">
             <h2>📊 إدارة التقييمات</h2>
             <div id="ratingsList">
@@ -415,20 +412,19 @@
         </div>
     </div>
 
-    <!-- ===== مودال إضافة/تعديل مدرس ===== -->
     <div id="teacherModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">➕ إضافة مدرس جديد</h2>
             <input type="hidden" id="editId">
             <input type="text" id="teacherName" placeholder="اسم المدرس">
             <input type="text" id="teacherSubject" placeholder="المادة (تأسيس، ماث، عربي، إنجليزي...)">
-
+            
             <div class="checkbox-group">
                 <label><input type="checkbox" id="stage1" value="ابتدائي"> ابتدائي</label>
                 <label><input type="checkbox" id="stage2" value="اعدادي"> اعدادي</label>
                 <label><input type="checkbox" id="stage3" value="ثانوي"> ثانوي</label>
             </div>
-
+            
             <input type="text" id="teacherPhone" placeholder="رقم واتساب (مثال: 201012345678)">
             <input type="text" id="teacherVideo" placeholder="رابط فيديو يوتيوب (مثال: https://youtu.be/VIDEO_ID)">
             <textarea id="teacherDescription" placeholder="وصف المدرس"></textarea>
@@ -440,53 +436,19 @@
     <div id="toast" class="toast"></div>
 
     <script>
+        const ADMIN_PASSWORD = "php123";
+
         // ==========================================
-        // ===== الجزء الأول: كلمة المرور و JSON Bin =====
+        // ===== ١. تهيئة JSON Bin (API الصحيح) =====
         // ==========================================
 
-        const ADMIN_PASSWORD = "php123";
         const JSONBIN_BIN_ID = '6a936a6cf5f4af5e295310fe';
         const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
         const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
         // ==========================================
-        // ===== الجزء الثاني: دوال JSON Bin =====
+        // ===== ٢. دوال JSON Bin =====
         // ==========================================
-
-        async function getRatings() {
-            try {
-                const res = await fetch(JSONBIN_URL, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                });
-                const data = await res.json();
-                return data.record.ratings || {};
-            } catch (error) {
-                console.error('Error reading ratings:', error);
-                return {};
-            }
-        }
-
-        async function saveRatings(ratings) {
-            try {
-                const res = await fetch(JSONBIN_URL, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                });
-                const data = await res.json();
-                const currentData = data.record || {};
-                currentData.ratings = ratings;
-
-                await fetch(JSONBIN_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify(currentData)
-                });
-            } catch (error) {
-                console.error('Error saving ratings:', error);
-            }
-        }
 
         async function getTeachersFromCloud() {
             try {
@@ -518,23 +480,60 @@
                     },
                     body: JSON.stringify(currentData)
                 });
-                console.log('✅ تم الحفظ في JSON Bin بنجاح');
+                console.log('✅ Teachers saved successfully');
             } catch (error) {
                 console.error('Error saving teachers:', error);
             }
         }
 
+        async function getRatings() {
+            try {
+                const res = await fetch(JSONBIN_URL, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+                const data = await res.json();
+                return data.record.ratings || {};
+            } catch (error) {
+                console.error('Error reading ratings:', error);
+                return {};
+            }
+        }
+
+        async function saveRatings(ratings) {
+            try {
+                const res = await fetch(JSONBIN_URL, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+                const data = await res.json();
+                const currentData = data.record || {};
+                currentData.ratings = ratings;
+
+                await fetch(JSONBIN_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify(currentData)
+                });
+                console.log('✅ Ratings saved successfully');
+            } catch (error) {
+                console.error('Error saving ratings:', error);
+            }
+        }
+
         // ==========================================
-        // ===== الجزء الثالث: نظام الدخول =====
+        // ===== ٣. نظام الدخول =====
         // ==========================================
 
         function login() {
             const password = document.getElementById('adminPassword').value;
             const error = document.getElementById('errorMsg');
-
             if (password === ADMIN_PASSWORD) {
                 localStorage.setItem('adminLoggedIn', 'true');
-                showDashboard();
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                loadTeachers();
             } else {
                 error.style.display = 'block';
                 setTimeout(() => error.style.display = 'none', 3000);
@@ -543,16 +542,11 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             if (localStorage.getItem('adminLoggedIn') === 'true') {
-                showDashboard();
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                loadTeachers();
             }
         });
-
-        async function showDashboard() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('dashboardSection').style.display = 'block';
-            await loadTeachers();
-            loadRatings();
-        }
 
         function logout() {
             if (confirm('⚠️ هل أنت متأكد من الخروج؟')) {
@@ -564,32 +558,38 @@
         }
 
         // ==========================================
-        // ===== الجزء الرابع: بيانات المدرسين =====
+        // ===== ٤. بيانات المدرسين =====
         // ==========================================
 
         let teachers = [];
 
         async function loadTeachers() {
-            const cloudTeachers = await getTeachersFromCloud();
-
-            if (cloudTeachers && cloudTeachers.length > 0) {
-                teachers = cloudTeachers;
-                localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-            } else {
-                const saved = localStorage.getItem('adminTeachers');
-                if (saved) {
-                    teachers = JSON.parse(saved);
-                    if (teachers.length > 0) {
+            try {
+                const cloudTeachers = await getTeachersFromCloud();
+                if (cloudTeachers && cloudTeachers.length > 0) {
+                    teachers = cloudTeachers;
+                    localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+                } else {
+                    const saved = localStorage.getItem('adminTeachers');
+                    if (saved) {
+                        teachers = JSON.parse(saved);
+                        if (teachers.length > 0) {
+                            await saveTeachersToCloud(teachers);
+                        }
+                    } else {
+                        teachers = [];
+                        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
                         await saveTeachersToCloud(teachers);
                     }
-                } else {
-                    teachers = [];
-                    localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-                    await saveTeachersToCloud(teachers);
                 }
+                renderTeachers();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading teachers:', error);
+                teachers = [];
+                renderTeachers();
+                updateStats();
             }
-            renderTeachers();
-            updateStats();
         }
 
         function saveTeachers() {
@@ -598,21 +598,18 @@
         }
 
         // ==========================================
-        // ===== الجزء الخامس: عرض المدرسين =====
+        // ===== ٥. عرض المدرسين =====
         // ==========================================
 
         function renderTeachers() {
             const container = document.getElementById('teachersList');
-
             if (teachers.length === 0) {
                 container.innerHTML = '<div class="empty-msg">📭 لا يوجد مدرسين حالياً</div>';
                 return;
             }
-
             container.innerHTML = teachers.map(t => {
                 const stagesDisplay = t.stages ? t.stages.join(' - ') : 'لا يوجد';
                 const videoDisplay = t.video ? '🎬 رابط فيديو' : 'لا يوجد';
-
                 return `
                     <div class="teacher-item">
                         <div class="info">
@@ -620,7 +617,7 @@
                             <span>📚 ${t.subject}</span>
                             <span>📌 ${stagesDisplay}</span>
                             <span>⭐ ${t.rating || 0} (${t.totalRatings || 0} تقييم)</span>
-                            <span>📱 ${t.phone}</span>
+                                                       <span>📱 ${t.phone}</span>
                             <span>🎬 ${videoDisplay}</span>
                         </div>
                         <div class="actions">
@@ -633,20 +630,13 @@
         }
 
         // ==========================================
-        // ===== الجزء السادس: الإحصائيات =====
+        // ===== ٦. الإحصائيات =====
         // ==========================================
 
         function updateStats() {
             document.getElementById('totalTeachers').textContent = teachers.length;
-
             const subjects = new Set(teachers.map(t => t.subject));
             document.getElementById('totalSubjects').textContent = subjects.size;
-
-            if (teachers.length > 0) {
-                const avg = teachers.reduce((sum, t) => sum + (t.pricePerSession || 0), 0) / teachers.length;
-                document.getElementById('avgPrice').textContent = Math.round(avg) + ' ج';
-            }
-
             let totalRatings = 0;
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
@@ -658,7 +648,7 @@
         }
 
         // ==========================================
-        // ===== الجزء السابع: إدارة المدرسين =====
+        // ===== ٧. إدارة المدرسين =====
         // ==========================================
 
         function showAddModal() {
@@ -678,87 +668,61 @@
         function editTeacher(id) {
             const teacher = teachers.find(t => t.id === id);
             if (!teacher) return;
-
             document.getElementById('modalTitle').textContent = '✏️ تعديل مدرس';
             document.getElementById('editId').value = id;
             document.getElementById('teacherName').value = teacher.name;
             document.getElementById('teacherSubject').value = teacher.subject;
-
             document.getElementById('stage1').checked = teacher.stages && teacher.stages.includes('ابتدائي');
             document.getElementById('stage2').checked = teacher.stages && teacher.stages.includes('اعدادي');
             document.getElementById('stage3').checked = teacher.stages && teacher.stages.includes('ثانوي');
-
             document.getElementById('teacherPhone').value = teacher.phone;
             document.getElementById('teacherVideo').value = teacher.video || '';
             document.getElementById('teacherDescription').value = teacher.description || '';
             document.getElementById('teacherModal').style.display = 'block';
         }
 
-        async function saveTeacher() {
+        function saveTeacher() {
             const id = document.getElementById('editId').value;
             const name = document.getElementById('teacherName').value.trim();
             const subject = document.getElementById('teacherSubject').value.trim();
-
             const stages = [];
             if (document.getElementById('stage1').checked) stages.push('ابتدائي');
             if (document.getElementById('stage2').checked) stages.push('اعدادي');
             if (document.getElementById('stage3').checked) stages.push('ثانوي');
-
             const phone = document.getElementById('teacherPhone').value.trim();
             const video = document.getElementById('teacherVideo').value.trim();
             const description = document.getElementById('teacherDescription').value.trim();
 
             if (!name || !subject || stages.length === 0 || !phone) {
-                showToast('❌ يرجى ملء جميع الحقول المطلوبة (الاسم، المادة، مرحلة واحدة على الأقل، رقم واتساب)', 'error');
+                showToast('❌ يرجى ملء جميع الحقول المطلوبة', 'error');
                 return;
             }
 
             if (id) {
                 const index = teachers.findIndex(t => t.id == id);
                 if (index !== -1) {
-                    teachers[index] = { 
-                        ...teachers[index], 
-                        name, 
-                        subject, 
-                        stages, 
-                        phone, 
-                        video: video || null,
-                        description 
-                    };
+                    teachers[index] = { ...teachers[index], name, subject, stages, phone, video: video || null, description };
                 }
             } else {
                 const newId = Math.max(...teachers.map(t => t.id), 0) + 1;
-                teachers.push({ 
-                    id: newId, 
-                    name, 
-                    subject, 
-                    stages, 
-                    phone, 
-                    video: video || null,
-                    description,
-                    rating: 0,
-                    totalRatings: 0
-                });
+                teachers.push({ id: newId, name, subject, stages, phone, video: video || null, description, rating: 0, totalRatings: 0 });
             }
 
             saveTeachers();
             renderTeachers();
             updateStats();
             closeModal();
-            await loadRatings();
             showToast('✅ تم الحفظ بنجاح', 'success');
         }
 
-        async function deleteTeacher(id) {
+        function deleteTeacher(id) {
             const teacher = teachers.find(t => t.id === id);
             if (!teacher) return;
-
             if (confirm(`⚠️ هل أنت متأكد من حذف المدرس "${teacher.name}"؟`)) {
                 teachers = teachers.filter(t => t.id !== id);
                 saveTeachers();
                 renderTeachers();
                 updateStats();
-                await loadRatings();
                 showToast('✅ تم الحذف بنجاح', 'success');
             }
         }
@@ -766,89 +730,6 @@
         function closeModal() {
             document.getElementById('teacherModal').style.display = 'none';
         }
-
-        // ==========================================
-        // ===== الجزء الثامن: إدارة التقييمات =====
-        // ==========================================
-
-        async function loadRatings() {
-            const container = document.getElementById('ratingsList');
-            if (!container) return;
-
-            const ratings = await getRatings();
-            const allRatings = [];
-
-            Object.keys(ratings).forEach(teacherId => {
-                Object.keys(ratings[teacherId]).forEach(userPhone => {
-                    const r = ratings[teacherId][userPhone];
-                    const teacher = teachers.find(t => t.id == teacherId);
-                    allRatings.push({
-                        teacherId: teacherId,
-                        teacherName: teacher ? teacher.name : 'مدرس محذوف',
-                        userPhone: userPhone,
-                        rating: r.rating,
-                        date: r.date
-                    });
-                });
-            });
-
-            if (allRatings.length === 0) {
-                container.innerHTML = '<div class="empty-msg">📭 لا يوجد تقييمات حالياً</div>';
-                return;
-            }
-
-            container.innerHTML = allRatings.map((r) => `
-                <div class="teacher-item">
-                    <div class="info">
-                        <strong>👨‍🏫 ${r.teacherName}</strong>
-                        <span>📱 ${r.userPhone}</span>
-                        <span>⭐ ${r.rating} من ٥</span>
-                        <span>📅 ${new Date(r.date).toLocaleString('ar-EG')}</span>
-                    </div>
-                    <div class="actions">
-                        <button class="btn-delete" onclick="deleteRating('${r.teacherId}', '${r.userPhone}')">🗑️ حذف</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function deleteRating(teacherId, userPhone) {
-            const teacher = teachers.find(t => t.id == teacherId);
-            if (!confirm(`⚠️ هل أنت متأكد من حذف تقييم المدرس "${teacher ? teacher.name : 'مدرس محذوف'}"؟`)) {
-                return;
-            }
-
-            const ratings = await getRatings();
-            if (ratings[teacherId] && ratings[teacherId][userPhone]) {
-                delete ratings[teacherId][userPhone];
-                if (Object.keys(ratings[teacherId]).length === 0) {
-                    delete ratings[teacherId];
-                }
-                await saveRatings(ratings);
-
-                if (teacher) {
-                    const values = Object.values(ratings[teacherId] || {}).map(r => r.rating);
-                    if (values.length > 0) {
-                        const avg = values.reduce((a, b) => a + b, 0) / values.length;
-                        teacher.rating = Math.round(avg * 10) / 10;
-                        teacher.totalRatings = values.length;
-                    } else {
-                        teacher.rating = 0;
-                        teacher.totalRatings = 0;
-                    }
-                    saveTeachers();
-                }
-
-                showToast('✅ تم حذف التقييم بنجاح', 'success');
-                await loadRatings();
-                renderTeachers();
-                updateStats();
-            }
-        }
-
-        // ==========================================
-        // ===== الجزء التاسع: Toast =====
-        // ==========================================
 
         function showToast(message, type) {
             const toast = document.getElementById('toast');
@@ -860,10 +741,6 @@
                 toast.style.display = 'none';
             }, 3000);
         }
-
-        // ==========================================
-        // ===== الجزء العاشر: إغلاق المودال =====
-        // ==========================================
 
         window.onclick = function(event) {
             if (event.target === document.getElementById('teacherModal')) {
