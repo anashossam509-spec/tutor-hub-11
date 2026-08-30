@@ -85,6 +85,7 @@ async function saveRatings(ratings) {
             },
             body: JSON.stringify(currentData)
         });
+        console.log('✅ Ratings saved successfully');
     } catch (error) {
         console.error('Error saving ratings:', error);
     }
@@ -120,6 +121,7 @@ async function saveTeachersToCloud(teachersData) {
             },
             body: JSON.stringify(currentData)
         });
+        console.log('✅ Teachers saved successfully');
     } catch (error) {
         console.error('Error saving teachers:', error);
     }
@@ -132,26 +134,32 @@ async function saveTeachersToCloud(teachersData) {
 let teachers = [];
 
 async function loadTeachers() {
-    const cloudTeachers = await getTeachersFromCloud();
+    try {
+        const cloudTeachers = await getTeachersFromCloud();
 
-    if (cloudTeachers && cloudTeachers.length > 0) {
-        teachers = cloudTeachers;
-        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-    } else {
-        const saved = localStorage.getItem('adminTeachers');
-        if (saved) {
-            teachers = JSON.parse(saved);
-            if (teachers.length > 0) {
+        if (cloudTeachers && cloudTeachers.length > 0) {
+            teachers = cloudTeachers;
+            localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+        } else {
+            const saved = localStorage.getItem('adminTeachers');
+            if (saved) {
+                teachers = JSON.parse(saved);
+                if (teachers.length > 0) {
+                    await saveTeachersToCloud(teachers);
+                }
+            } else {
+                teachers = [];
+                localStorage.setItem('adminTeachers', JSON.stringify(teachers));
                 await saveTeachersToCloud(teachers);
             }
-        } else {
-            teachers = [];
-            localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-            await saveTeachersToCloud(teachers);
         }
-    }
 
-    displayTeachers(teachers);
+        displayTeachers(teachers);
+    } catch (error) {
+        console.error('Error loading teachers:', error);
+        teachers = [];
+        displayTeachers(teachers);
+    }
 }
 
 function saveTeachers() {
@@ -267,6 +275,15 @@ function filterTeachers() {
 // ===== ٧. نظام التقييم =====
 // ==========================================
 
+// رسالة التقييم المختصرة
+function getRatingMessage(teacherName, subject) {
+    return `⭐ قيموني على Teachers Hub عشان أوصل لأكبر عدد من الطلاب 🙏📚\n\n👩‍🏫 المدرس: ${teacherName}\n📚 المادة: ${subject}\n🔗 الرابط: ${window.location.href}`;
+}
+
+// مثال: رسالة لبسمة السيد
+const message = getRatingMessage("بسمة السيد", "تأسيس");
+console.log(message);
+
 async function rateTeacher(teacherId) {
     const teacher = teachers.find(t => t.id === teacherId);
     if (!teacher) return;
@@ -335,7 +352,7 @@ async function rateTeacher(teacherId) {
         await saveTeachersToCloud(teachers);
     }
 
-    alert(`✅ شكراً لتقييمك!`);
+    alert(`✅ شكراً لتقييمكم`);
     displayTeachers(teachers);
 }
 
