@@ -436,12 +436,11 @@
     <div id="toast" class="toast"></div>
 
     <script>
+        // ==========================================
+        // ===== ١. كلمة المرور وتهيئة JSON Bin =====
+        // ==========================================
+        
         const ADMIN_PASSWORD = "php123";
-
-        // ==========================================
-        // ===== ١. تهيئة JSON Bin (API الصحيح) =====
-        // ==========================================
-
         const JSONBIN_BIN_ID = '6a936a6cf5f4af5e295310fe';
         const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
         const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
@@ -762,8 +761,8 @@
                 var ratings = await getRatings();
                 var allRatings = [];
 
-                Object.keys(ratings).forEach(function(teacherId) {
-                    Object.keys(ratings[teacherId]).forEach(function(userPhone) {
+                for (var teacherId in ratings) {
+                    for (var userPhone in ratings[teacherId]) {
                         var r = ratings[teacherId][userPhone];
                         var teacher = teachers.find(function(t) { return t.id == teacherId; });
                         allRatings.push({
@@ -773,16 +772,18 @@
                             rating: r.rating,
                             date: r.date
                         });
-                    });
-                });
+                    }
+                }
 
                 if (allRatings.length === 0) {
                     container.innerHTML = '<div class="empty-msg">📭 لا يوجد تقييمات حالياً</div>';
                     return;
                 }
 
-                container.innerHTML = allRatings.map(function(r) {
-                    return '<div class="teacher-item">' +
+                var html = '';
+                for (var i = 0; i < allRatings.length; i++) {
+                    var r = allRatings[i];
+                    html += '<div class="teacher-item">' +
                         '<div class="info">' +
                         '<strong>👨‍🏫 ' + r.teacherName + '</strong>' +
                         '<span>📱 ' + r.userPhone + '</span>' +
@@ -790,14 +791,53 @@
                         '<span>📅 ' + new Date(r.date).toLocaleString('ar-EG') + '</span>' +
                         '</div>' +
                         '<div class="actions">' +
+                        '<button class="btn-edit" onclick="editRating(\'' + r.teacherId + '\', \'' + r.userPhone + '\')">✏️ تعديل</button>' +
                         '<button class="btn-delete" onclick="deleteRating(\'' + r.teacherId + '\', \'' + r.userPhone + '\')">🗑️ حذف</button>' +
                         '</div>' +
                         '</div>';
-                }).join('');
+                }
+                container.innerHTML = html;
+
             } catch (error) {
                 console.error('Error loading ratings:', error);
                 container.innerHTML = '<div class="empty-msg">❌ حدث خطأ في تحميل التقييمات</div>';
             }
+        }
+
+        async function editRating(teacherId, userPhone) {
+            var ratings = await getRatings();
+            if (!ratings[teacherId] || !ratings[teacherId][userPhone]) {
+                showToast('❌ لا يوجد تقييم', 'error');
+                return;
+            }
+
+            var teacher = teachers.find(function(t) { return t.id == teacherId; });
+            var currentRating = ratings[teacherId][userPhone].rating;
+            var newRating = prompt('✏️ تعديل تقييم المدرس ' + (teacher ? teacher.name : 'مدرس محذوف') + '\nالتقييم الحالي: ' + currentRating + ' من ٥\nأدخل التقييم الجديد (١-٥):');
+
+            if (newRating === null) return;
+
+            var ratingNum = parseInt(newRating);
+            if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+                showToast('❌ يرجى إدخال رقم بين ١ و ٥', 'error');
+                return;
+            }
+
+            ratings[teacherId][userPhone].rating = ratingNum;
+            await saveRatings(ratings);
+
+            if (teacher) {
+                var values = Object.values(ratings[teacherId] || {}).map(function(r) { return r.rating; });
+                var avg = values.reduce(function(a, b) { return a + b; }, 0) / values.length;
+                teacher.rating = Math.round(avg * 10) / 10;
+                teacher.totalRatings = values.length;
+                saveTeachers();
+            }
+
+            showToast('✅ تم تعديل التقييم بنجاح', 'success');
+            await loadRatings();
+            renderTeachers();
+            updateStats();
         }
 
         async function deleteRating(teacherId, userPhone) {
