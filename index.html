@@ -3,9 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ===== SEO الأساسي ===== -->
+    <title>TeachHub.space - منصة المدرسين الأولى في مصر | دروس خصوصية</title>
+    <meta name="description" content="منصة TeachHub.space تجمع أفضل المدرسين في مصر. ابحث عن مدرس في مادتك، شوف تقييماته، وتواصل معه مباشرة. دروس خصوصية في كل المواد.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://teachhub.space/">
+    <meta name="google-site-verification" content="A6A4LBgUqiErzeoIxNYJuLdg1Lj3ffCKGam-QFe1sWM" />
+    
+    <!-- ===== Open Graph (للمشاركة على فيسبوك) ===== -->
+    <meta property="og:title" content="TeachHub.space - منصة المدرسين الأولى في مصر">
+    <meta property="og:description" content="ابحث عن أفضل المدرسين في مصر، شوف التقييمات، وتواصل مباشرة.">
+    <meta property="og:url" content="https://teachhub.space/">
+    <meta property="og:type" content="website">
+    
+    <!-- ===== Twitter Card ===== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TeachHub.space - منصة المدرسين الأولى في مصر">
+    <meta name="twitter:description" content="أفضل المنصات لتوصية المدرسين في مصر.">
+    
+    <!-- ===== Structured Data (Schema Markup) ===== -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "TeachHub.space",
+        "url": "https://teachhub.space/",
+        "description": "منصة توصية المدرسين في مصر",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://teachhub.space/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    
     <title>Teach Hub - منصة التوصية</title>
     <link rel="stylesheet" href="style.css">
-<meta name="google-site-verification" content="A6A4LBgUqiErzeoIxNYJuLdg1Lj3ffCKGam-QFe1sWM" />
 </head>
 <body>
 
@@ -14,9 +48,14 @@
         <p>دليلك لأفضل المدرسين - تقييمات حقيقية من أمهات وطلاب</p>
     </header>
 
+    <!-- ===== H1 جديد للمحتوى الرئيسي ===== -->
+    <h1 style="text-align: center; font-size: 2rem; color: #1a2a6c; margin: 30px 0;">
+        ابحث عن أفضل مدرس في مادتك
+    </h1>
+
     <section id="filters">
         <input type="text" id="searchInput" placeholder="🔍 ابحث عن مدرس أو مادة..." onkeyup="filterTeachers()">
-        
+
         <select id="stageFilter" onchange="filterTeachers()">
             <option value="all">كل المراحل</option>
             <option value="ابتدائي">ابتدائي</option>
@@ -66,7 +105,6 @@
     <footer>
         <p>© 2026 Teach Hub - جميع الحقوق محفوظة</p>
     </footer>
-
 
     <script src="script.js"></script>
 </body>
