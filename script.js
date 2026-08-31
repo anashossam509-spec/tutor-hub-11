@@ -313,7 +313,7 @@ function sharePlatform(teacherId) {
     if (!teacher) return;
 
     var url = window.location.href;
-    var message = '📚 أنا المدرس ' + teacher.name + ' على منصة Teachers Hub\nشوفوا تقييماتي وتواصلوا معي:\n' + url + '\n\n👨‍🎓 للطلاب: قيموا مدرسكم وساعدوه يظهر في المنصة\n👨‍👩‍👦 لأولياء الأمور: شوفوا التقييمات وتواصلوا مع أفضل المدرسين\n👨‍🏫 للمدرسين: سجلوا في المنصة ووصلوا لأكبر عدد من الطلاب';
+    var message = '📚 أنا المدرس ' + teacher.name + ' على منصة Teach Hub\nشوفوا تقييماتي وتواصلوا معي:\n' + url + '\n\n👨‍🎓 للطلاب: قيموا مدرسكم وساعدوه يظهر في المنصة\n👨‍👩‍👦 لأولياء الأمور: شوفوا التقييمات وتواصلوا مع أفضل المدرسين\n👨‍🏫 للمدرسين: سجلوا في المنصة ووصلوا لأكبر عدد من الطلاب';
 
     window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank');
 }
