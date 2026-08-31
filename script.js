@@ -200,7 +200,7 @@ function displayTeachers(teachersList) {
             '<div class="detail" style="border-bottom: none;"><span>📱 واتساب</span><span class="phone">' + teacher.phone + '</span></div>' +
             '<p style="font-size:0.9rem;color:#7f8c8d;margin:10px 0;text-align:right;">📝 ' + (teacher.description || '') + '</p>' +
             videoButton +
-            '<a href="https://wa.me/' + teacher.phone + '?text=السلام%20عليكم%20أستاذ%20' + encodeURIComponent(teacher.name) + '،%20أنا%20جيت%20من%20منصة%20Teachers%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" class="whatsapp-btn" target="_blank">📱 تواصل مع المدرس</a>' +
+            '<a href="https://wa.me/' + teacher.phone + '?text=السلام%20عليكم%20أستاذ%20' + encodeURIComponent(teacher.name) + '،%20أنا%20جيت%20من%20منصة%20Teach%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" class="whatsapp-btn" target="_blank">📱 تواصل مع المدرس</a>' +
             '<button class="rate-btn" onclick="rateTeacher(' + teacher.id + ')">⭐ قيم المدرس</button>' +
             '<button class="share-btn" onclick="sharePlatform(' + teacher.id + ')">📢 شارك المنصة مع طلابك وأولياء الأمور</button>' +
             '</div>';
