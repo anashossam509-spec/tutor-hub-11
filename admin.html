@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم Teachers Hub</title>
+    <title>لوحة تحكم TeachHub.space</title>
     <style>
         * {
             margin: 0;
@@ -358,534 +358,586 @@
     </style>
 </head>
 <body>
+<div id="loginSection" class="login-box">
+    <h1>🔐 لوحة التحكم</h1>
+    <p>أدخل كلمة المرور للوصول</p>
+    <input type="password" id="adminPassword" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter') login()">
+    <button onclick="login()">دخول</button>
+    <div class="error" id="errorMsg">❌ كلمة المرور غير صحيحة</div>
+</div>
 
-    <div id="loginSection" class="login-box">
-        <h1>🔐 لوحة التحكم</h1>
-        <p>أدخل كلمة المرور للوصول</p>
-        <input type="password" id="adminPassword" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter') login()">
-        <button onclick="login()">دخول</button>
-        <div class="error" id="errorMsg">❌ كلمة المرور غير صحيحة</div>
-    </div>
-
-    <div id="dashboardSection" class="dashboard-container">
-        <div class="dashboard-header">
-            <h1>📊 لوحة التحكم</h1>
-            <div class="btn-group">
-                <span class="admin-only">🔐 أنت المطور</span>
-                <button class="btn-add" onclick="showAddModal()">➕ إضافة مدرس</button>
-                <button class="btn-refresh" onclick="loadTeachers()">🔄 تحديث</button>
-                <button class="btn-logout" onclick="logout()">🚪 خروج</button>
-            </div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>👨‍🏫 عدد المدرسين</h3>
-                <div class="number" id="totalTeachers">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>⭐ عدد التقييمات</h3>
-                <div class="number" id="totalRatings">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>📚 عدد المواد</h3>
-                <div class="number" id="totalSubjects">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>💰 متوسط القيمة</h3>
-                <div class="number" id="avgPrice">0 ج</div>
-            </div>
-        </div>
-
-        <div class="teacher-list">
-            <h2>📋 قائمة المدرسين</h2>
-            <div id="teachersList">
-                <div class="empty-msg">⏳ جاري التحميل...</div>
-            </div>
-        </div>
-
-        <div class="teacher-list" style="margin-top: 30px;">
-            <h2>📊 إدارة التقييمات</h2>
-            <div id="ratingsList">
-                <div class="empty-msg">⏳ جاري التحميل...</div>
-            </div>
+<div id="dashboardSection" class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>📊 لوحة التحكم</h1>
+        <div class="btn-group">
+            <span class="admin-only">🔐 أنت المطور</span>
+            <button class="btn-add" onclick="showAddModal()">➕ إضافة مدرس</button>
+            <button class="btn-refresh" onclick="loadTeachers()">🔄 تحديث</button>
+            <button class="btn-logout" onclick="logout()">🚪 خروج</button>
         </div>
     </div>
 
-    <div id="teacherModal" class="modal">
-        <div class="modal-content">
-            <h2 id="modalTitle">➕ إضافة مدرس جديد</h2>
-            <input type="hidden" id="editId">
-            <input type="text" id="teacherName" placeholder="اسم المدرس">
-            <input type="text" id="teacherSubject" placeholder="المادة (تأسيس، ماث، عربي، إنجليزي...)">
-            
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="stage1" value="ابتدائي"> ابتدائي</label>
-                <label><input type="checkbox" id="stage2" value="اعدادي"> اعدادي</label>
-                <label><input type="checkbox" id="stage3" value="ثانوي"> ثانوي</label>
-            </div>
-<!-- ===== المناطق المتعددة (checkbox) ===== -->
-<div class="checkbox-group" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 10px;">
-    <label style="font-weight: bold; display: block; margin-bottom: 8px; color: #1a2a6c;">📍 المناطق التي يدرس فيها:</label>
-    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-        <label><input type="checkbox" class="area-checkbox" value="الشروق"> الشروق</label>
-        <label><input type="checkbox" class="area-checkbox" value="مدينتي"> مدينتي</label>
-        <label><input type="checkbox" class="area-checkbox" value="بدر"> بدر</label>
-        <label><input type="checkbox" class="area-checkbox" value="العبور"> العبور</label>
-        <label><input type="checkbox" class="area-checkbox" value="هليوبوليس"> هليوبوليس</label>
-        <label><input type="checkbox" class="area-checkbox" value="العاصمة الإدارية"> العاصمة الإدارية</label>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>👨‍🏫 عدد المدرسين</h3>
+            <div class="number" id="totalTeachers">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>⭐ عدد التقييمات</h3>
+            <div class="number" id="totalRatings">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>📚 عدد المواد</h3>
+            <div class="number" id="totalSubjects">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>💰 متوسط القيمة</h3>
+            <div class="number" id="avgPrice">0 ج</div>
+        </div>
+    </div>
+
+    <div class="teacher-list">
+        <h2>📋 قائمة المدرسين</h2>
+        <div id="teachersList">
+            <div class="empty-msg">⏳ جاري التحميل...</div>
+        </div>
+    </div>
+
+    <div class="teacher-list" style="margin-top: 30px;">
+        <h2>📊 إدارة التقييمات</h2>
+        <div id="ratingsList">
+            <div class="empty-msg">⏳ جاري التحميل...</div>
+        </div>
     </div>
 </div>
-            
-            <input type="text" id="teacherPhone" placeholder="رقم واتساب (مثال: 201012345678)">
-            <input type="text" id="teacherVideo" placeholder="رابط فيديو يوتيوب (مثال: https://youtu.be/VIDEO_ID)">
-            <textarea id="teacherDescription" placeholder="وصف المدرس"></textarea>
-            <button class="btn-save" onclick="saveTeacher()">💾 حفظ</button>
-            <button class="btn-close" onclick="closeModal()">إلغاء</button>
-        </div>
-    </div>
-
-    <div id="toast" class="toast"></div>
-
-    <script>
-        // ==========================================
-        // ===== ١. كلمة المرور وتهيئة JSON Bin =====
-        // ==========================================
+<div id="teacherModal" class="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle">➕ إضافة مدرس جديد</h2>
+        <input type="hidden" id="editId">
+        <input type="text" id="teacherName" placeholder="اسم المدرس">
         
-        const ADMIN_PASSWORD = "php123";
-        const JSONBIN_BIN_ID = '6a936a6cf5f4af5e295310fe';
-        const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
-        const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
+        <!-- ===== المواد المتعددة (checkbox) ===== -->
+        <div class="checkbox-group" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 10px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 8px; color: #1a2a6c;">📚 المواد التي يدرسها:</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <label><input type="checkbox" class="subject-checkbox" value="تأسيس"> تأسيس</label>
+                <label><input type="checkbox" class="subject-checkbox" value="ماث"> ماث</label>
+                <label><input type="checkbox" class="subject-checkbox" value="عربي"> عربي</label>
+                <label><input type="checkbox" class="subject-checkbox" value="إنجليزي"> إنجليزي</label>
+                <label><input type="checkbox" class="subject-checkbox" value="علوم"> علوم</label>
+                <label><input type="checkbox" class="subject-checkbox" value="فيزياء"> فيزياء</label>
+                <label><input type="checkbox" class="subject-checkbox" value="كيمياء"> كيمياء</label>
+                <label><input type="checkbox" class="subject-checkbox" value="تاريخ"> تاريخ</label>
+                <label><input type="checkbox" class="subject-checkbox" value="جغرافيا"> جغرافيا</label>
+                <label><input type="checkbox" class="subject-checkbox" value="اداره اعمال"> إدارة أعمال</label>
+                <label><input type="checkbox" class="subject-checkbox" value="محاسبه"> محاسبة</label>
+                <label><input type="checkbox" class="subject-checkbox" value="فلسفه"> فلسفة</label>
+                <label><input type="checkbox" class="subject-checkbox" value="برمجه"> برمجة</label>
+                <label><input type="checkbox" class="subject-checkbox" value="ألماني"> ألماني</label>
+                <label><input type="checkbox" class="subject-checkbox" value="فرنساوي"> فرنساوي</label>
+                <label><input type="checkbox" class="subject-checkbox" value="ايطالي"> إيطالي</label>
+                <label><input type="checkbox" class="subject-checkbox" value="رسم"> رسم</label>
+                <label><input type="checkbox" class="subject-checkbox" value="دراسات"> دراسات</label>
+                <label><input type="checkbox" class="subject-checkbox" value="science"> Science</label>
+            </div>
+        </div>
 
-        // ==========================================
-        // ===== ٢. دوال JSON Bin =====
-        // ==========================================
+        <!-- ===== المراحل ===== -->
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="stage1" value="ابتدائي"> ابتدائي</label>
+            <label><input type="checkbox" id="stage2" value="اعدادي"> اعدادي</label>
+            <label><input type="checkbox" id="stage3" value="ثانوي"> ثانوي</label>
+        </div>
 
-        async function getTeachersFromCloud() {
-            try {
-                var res = await fetch(JSONBIN_URL, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                });
-                var data = await res.json();
-                return data.record.teachers || [];
-            } catch (error) {
-                console.error('Error reading teachers:', error);
-                return [];
-            }
+        <!-- ===== المناطق المتعددة (checkbox) ===== -->
+        <div class="checkbox-group" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 10px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 8px; color: #1a2a6c;">📍 المناطق التي يدرس فيها:</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <label><input type="checkbox" class="area-checkbox" value="الشروق"> الشروق</label>
+                <label><input type="checkbox" class="area-checkbox" value="مدينتي"> مدينتي</label>
+                <label><input type="checkbox" class="area-checkbox" value="بدر"> بدر</label>
+                <label><input type="checkbox" class="area-checkbox" value="العبور"> العبور</label>
+                <label><input type="checkbox" class="area-checkbox" value="هليوبوليس"> هليوبوليس</label>
+                <label><input type="checkbox" class="area-checkbox" value="العاصمة الإدارية"> العاصمة الإدارية</label>
+            </div>
+        </div>
+
+        <input type="text" id="teacherImage" placeholder="رابط صورة المدرس (مثال: https://i.imgur.com/xxxxx.jpg)">
+        <input type="text" id="teacherPhone" placeholder="رقم واتساب (مثال: 201012345678)">
+        <input type="text" id="teacherVideo" placeholder="رابط فيديو يوتيوب (مثال: https://youtu.be/VIDEO_ID)">
+        <textarea id="teacherDescription" placeholder="وصف المدرس"></textarea>
+        <button class="btn-save" onclick="saveTeacher()">💾 حفظ</button>
+        <button class="btn-close" onclick="closeModal()">إلغاء</button>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // ==========================================
+    // ===== ١. كلمة المرور وتهيئة JSON Bin =====
+    // ==========================================
+    
+    const ADMIN_PASSWORD = "php123";
+    const JSONBIN_BIN_ID = '6a936a6cf5f4af5e295310fe';
+    const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
+    const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
+
+    // ==========================================
+    // ===== ٢. دوال JSON Bin =====
+    // ==========================================
+
+    async function getTeachersFromCloud() {
+        try {
+            var res = await fetch(JSONBIN_URL, {
+                headers: { 'X-Master-Key': JSONBIN_API_KEY }
+            });
+            var data = await res.json();
+            return data.record.teachers || [];
+        } catch (error) {
+            console.error('Error reading teachers:', error);
+            return [];
         }
+    }
 
-        async function saveTeachersToCloud(teachersData) {
-            try {
-                var res = await fetch(JSONBIN_URL, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                });
-                var data = await res.json();
-                var currentData = data.record || {};
-                currentData.teachers = teachersData;
+    async function saveTeachersToCloud(teachersData) {
+        try {
+            var res = await fetch(JSONBIN_URL, {
+                headers: { 'X-Master-Key': JSONBIN_API_KEY }
+            });
+            var data = await res.json();
+            var currentData = data.record || {};
+            currentData.teachers = teachersData;
 
-                await fetch(JSONBIN_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify(currentData)
-                });
-                console.log('✅ Teachers saved successfully');
-            } catch (error) {
-                console.error('Error saving teachers:', error);
-            }
+            await fetch(JSONBIN_URL, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_API_KEY
+                },
+                body: JSON.stringify(currentData)
+            });
+            console.log('✅ Teachers saved successfully');
+        } catch (error) {
+            console.error('Error saving teachers:', error);
         }
+    }
 
-        async function getRatings() {
-            try {
-                var res = await fetch(JSONBIN_URL, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                });
-                var data = await res.json();
-                return data.record.ratings || {};
-            } catch (error) {
-                console.error('Error reading ratings:', error);
-                return {};
-            }
+    async function getRatings() {
+        try {
+            var res = await fetch(JSONBIN_URL, {
+                headers: { 'X-Master-Key': JSONBIN_API_KEY }
+            });
+            var data = await res.json();
+            return data.record.ratings || {};
+        } catch (error) {
+            console.error('Error reading ratings:', error);
+            return {};
         }
+    }
 
-        async function saveRatings(ratings) {
-            try {
-                var res = await fetch(JSONBIN_URL, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                });
-                var data = await res.json();
-                var currentData = data.record || {};
-                currentData.ratings = ratings;
+    async function saveRatings(ratings) {
+        try {
+            var res = await fetch(JSONBIN_URL, {
+                headers: { 'X-Master-Key': JSONBIN_API_KEY }
+            });
+            var data = await res.json();
+            var currentData = data.record || {};
+            currentData.ratings = ratings;
 
-                await fetch(JSONBIN_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify(currentData)
-                });
-                console.log('✅ Ratings saved successfully');
-            } catch (error) {
-                console.error('Error saving ratings:', error);
-            }
+            await fetch(JSONBIN_URL, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_API_KEY
+                },
+                body: JSON.stringify(currentData)
+            });
+            console.log('✅ Ratings saved successfully');
+        } catch (error) {
+            console.error('Error saving ratings:', error);
         }
+    }// ==========================================
+// ===== ٣. نظام الدخول =====
+// ==========================================
 
-        // ==========================================
-        // ===== ٣. نظام الدخول =====
-        // ==========================================
+function login() {
+    var password = document.getElementById('adminPassword').value;
+    var error = document.getElementById('errorMsg');
+    if (password === ADMIN_PASSWORD) {
+        localStorage.setItem('adminLoggedIn', 'true');
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('dashboardSection').style.display = 'block';
+        loadTeachers();
+    } else {
+        error.style.display = 'block';
+        setTimeout(function() { error.style.display = 'none'; }, 3000);
+    }
+}
 
-        function login() {
-            var password = document.getElementById('adminPassword').value;
-            var error = document.getElementById('errorMsg');
-            if (password === ADMIN_PASSWORD) {
-                localStorage.setItem('adminLoggedIn', 'true');
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboardSection').style.display = 'block';
-                loadTeachers();
-            } else {
-                error.style.display = 'block';
-                setTimeout(function() { error.style.display = 'none'; }, 3000);
-            }
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('adminLoggedIn') === 'true') {
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('dashboardSection').style.display = 'block';
+        loadTeachers();
+    }
+});
 
-        document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('adminLoggedIn') === 'true') {
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboardSection').style.display = 'block';
-                loadTeachers();
-            }
-        });
+function logout() {
+    if (confirm('⚠️ هل أنت متأكد من الخروج؟')) {
+        localStorage.removeItem('adminLoggedIn');
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('dashboardSection').style.display = 'none';
+        document.getElementById('adminPassword').value = '';
+    }
+}
 
-        function logout() {
-            if (confirm('⚠️ هل أنت متأكد من الخروج؟')) {
-                localStorage.removeItem('adminLoggedIn');
-                document.getElementById('loginSection').style.display = 'block';
-                document.getElementById('dashboardSection').style.display = 'none';
-                document.getElementById('adminPassword').value = '';
-            }
-        }
+// ==========================================
+// ===== ٤. بيانات المدرسين =====
+// ==========================================
 
-        // ==========================================
-        // ===== ٤. بيانات المدرسين =====
-        // ==========================================
+var teachers = [];
 
-        var teachers = [];
-
-        async function loadTeachers() {
-            try {
-                var cloudTeachers = await getTeachersFromCloud();
-                if (cloudTeachers && cloudTeachers.length > 0) {
-                    teachers = cloudTeachers;
-                    localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-                } else {
-                    var saved = localStorage.getItem('adminTeachers');
-                    if (saved) {
-                        teachers = JSON.parse(saved);
-                        if (teachers.length > 0) {
-                            await saveTeachersToCloud(teachers);
-                        }
-                    } else {
-                        teachers = [];
-                        localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-                        await saveTeachersToCloud(teachers);
-                    }
-                }
-                renderTeachers();
-                updateStats();
-                loadRatings();
-            } catch (error) {
-                console.error('Error loading teachers:', error);
-                teachers = [];
-                renderTeachers();
-                updateStats();
-            }
-        }
-
-        function saveTeachers() {
+async function loadTeachers() {
+    try {
+        var cloudTeachers = await getTeachersFromCloud();
+        if (cloudTeachers && cloudTeachers.length > 0) {
+            teachers = cloudTeachers;
             localStorage.setItem('adminTeachers', JSON.stringify(teachers));
-            saveTeachersToCloud(teachers);
-        }
-
-        // ==========================================
-        // ===== ٥. عرض المدرسين =====
-        // ==========================================
-
-        function renderTeachers() {
-            var container = document.getElementById('teachersList');
-            if (teachers.length === 0) {
-                container.innerHTML = '<div class="empty-msg">📭 لا يوجد مدرسين حالياً</div>';
-                return;
-            }
-            container.innerHTML = teachers.map(function(t) {
-                var stagesDisplay = t.stages ? t.stages.join(' - ') : 'لا يوجد';
-                var videoDisplay = t.video ? '🎬 رابط فيديو' : 'لا يوجد';
-                return '<div class="teacher-item">' +
-                    '<div class="info">' +
-                    '<strong>' + t.name + '</strong>' +
-                    '<span>📚 ' + t.subject + '</span>' +
-                    '<span>📌 ' + stagesDisplay + '</span>' +
-                    '<span>⭐ ' + (t.rating || 0) + ' (' + (t.totalRatings || 0) + ' تقييم)</span>' +
-                                        '<span>📱 ' + t.phone + '</span>' +
-                    '<span>🎬 ' + videoDisplay + '</span>' +
-                    '</div>' +
-                    '<div class="actions">' +
-                    '<button class="btn-edit" onclick="editTeacher(' + t.id + ')">✏️ تعديل</button>' +
-                    '<button class="btn-delete" onclick="deleteTeacher(' + t.id + ')">🗑️ حذف</button>' +
-                    '</div>' +
-                    '</div>';
-            }).join('');
-        }
-
-        // ==========================================
-        // ===== ٦. الإحصائيات =====
-        // ==========================================
-
-        function updateStats() {
-            document.getElementById('totalTeachers').textContent = teachers.length;
-            var subjects = new Set(teachers.map(function(t) { return t.subject; }));
-            document.getElementById('totalSubjects').textContent = subjects.size;
-            var totalRatings = 0;
-            for (var i = 0; i < localStorage.length; i++) {
-                var key = localStorage.key(i);
-                if (key && key.startsWith('rated_')) {
-                    totalRatings++;
-                }
-            }
-            document.getElementById('totalRatings').textContent = totalRatings;
-        }
-
-        // ==========================================
-        // ===== ٧. إدارة المدرسين =====
-        // ==========================================
-
-        function showAddModal() {
-            document.getElementById('modalTitle').textContent = '➕ إضافة مدرس جديد';
-            document.getElementById('editId').value = '';
-            document.getElementById('teacherName').value = '';
-            document.getElementById('teacherSubject').value = '';
-            document.getElementById('stage1').checked = false;
-            document.getElementById('stage2').checked = false;
-            document.getElementById('stage3').checked = false;
-            document.getElementById('teacherPhone').value = '';
-            document.getElementById('teacherVideo').value = '';
-            document.getElementById('teacherDescription').value = '';
-            document.getElementById('teacherModal').style.display = 'block';
-        }
-
-        function editTeacher(id) {
-            var teacher = teachers.find(function(t) { return t.id === id; });
-            if (!teacher) return;
-            document.getElementById('modalTitle').textContent = '✏️ تعديل مدرس';
-            document.getElementById('editId').value = id;
-            document.getElementById('teacherName').value = teacher.name;
-            document.getElementById('teacherSubject').value = teacher.subject;
-            document.getElementById('stage1').checked = teacher.stages && teacher.stages.includes('ابتدائي');
-            document.getElementById('stage2').checked = teacher.stages && teacher.stages.includes('اعدادي');
-            document.getElementById('stage3').checked = teacher.stages && teacher.stages.includes('ثانوي');
-            document.getElementById('teacherPhone').value = teacher.phone;
-            document.getElementById('teacherVideo').value = teacher.video || '';
-            document.getElementById('teacherDescription').value = teacher.description || '';
-            document.getElementById('teacherModal').style.display = 'block';
-        }
-
-        function saveTeacher() {
-            var id = document.getElementById('editId').value;
-            var name = document.getElementById('teacherName').value.trim();
-            var subject = document.getElementById('teacherSubject').value.trim();
-            var stages = [];
-            if (document.getElementById('stage1').checked) stages.push('ابتدائي');
-            if (document.getElementById('stage2').checked) stages.push('اعدادي');
-            if (document.getElementById('stage3').checked) stages.push('ثانوي');
-            var phone = document.getElementById('teacherPhone').value.trim();
-            var video = document.getElementById('teacherVideo').value.trim();
-            var description = document.getElementById('teacherDescription').value.trim();
-
-            if (!name || !subject || stages.length === 0 || !phone) {
-                showToast('❌ يرجى ملء جميع الحقول المطلوبة', 'error');
-                return;
-            }
-
-            if (id) {
-                var index = teachers.findIndex(function(t) { return t.id == id; });
-                if (index !== -1) {
-                    teachers[index] = { 
-                        id: parseInt(id),
-                        name: name,
-                        subject: subject,
-                        stages: stages,
-                        phone: phone,
-                        video: video || null,
-                        description: description,
-                        rating: teachers[index].rating || 0,
-                        totalRatings: teachers[index].totalRatings || 0
-                    };
+        } else {
+            var saved = localStorage.getItem('adminTeachers');
+            if (saved) {
+                teachers = JSON.parse(saved);
+                if (teachers.length > 0) {
+                    await saveTeachersToCloud(teachers);
                 }
             } else {
-                var newId = Math.max.apply(null, teachers.map(function(t) { return t.id; })) + 1;
-                teachers.push({ 
-                    id: newId,
-                    name: name,
-                    subject: subject,
-                    stages: stages,
-                    phone: phone,
-                    video: video || null,
-                    description: description,
-                    rating: 0,
-                    totalRatings: 0
+                teachers = [];
+                localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+                await saveTeachersToCloud(teachers);
+            }
+        }
+        renderTeachers();
+        updateStats();
+        loadRatings();
+    } catch (error) {
+        console.error('Error loading teachers:', error);
+        teachers = [];
+        renderTeachers();
+        updateStats();
+    }
+}
+
+function saveTeachers() {
+    localStorage.setItem('adminTeachers', JSON.stringify(teachers));
+    saveTeachersToCloud(teachers);
+}
+
+// ==========================================
+// ===== ٥. عرض المدرسين =====
+// ==========================================
+
+function renderTeachers() {
+    var container = document.getElementById('teachersList');
+    if (teachers.length === 0) {
+        container.innerHTML = '<div class="empty-msg">📭 لا يوجد مدرسين حالياً</div>';
+        return;
+    }
+    container.innerHTML = teachers.map(function(t) {
+        var stagesDisplay = t.stages ? t.stages.join(' - ') : 'لا يوجد';
+        var subjectsDisplay = t.subjects ? t.subjects.join(' - ') : 'لا يوجد';
+        var areasDisplay = t.areas ? t.areas.join(' - ') : 'لا يوجد';
+        var imageDisplay = t.image ? '🖼️ رابط صورة' : 'لا يوجد';
+        var videoDisplay = t.video ? '🎬 رابط فيديو' : 'لا يوجد';
+        return '<div class="teacher-item">' +
+            '<div class="info">' +
+            '<strong>' + t.name + '</strong>' +
+            '<span>📚 ' + subjectsDisplay + '</span>' +
+            '<span>📌 ' + stagesDisplay + '</span>' +
+            '<span>📍 ' + areasDisplay + '</span>' +
+            '<span>⭐ ' + (t.rating || 0) + ' (' + (t.totalRatings || 0) + ' تقييم)</span>' +
+            '<span>📱 ' + t.phone + '</span>' +
+            '<span>🖼️ ' + imageDisplay + '</span>' +
+            '<span>🎬 ' + videoDisplay + '</span>' +
+            '</div>' +
+            '<div class="actions">' +
+            '<button class="btn-edit" onclick="editTeacher(' + t.id + ')">✏️ تعديل</button>' +
+            '<button class="btn-delete" onclick="deleteTeacher(' + t.id + ')">🗑️ حذف</button>' +
+            '</div>' +
+            '</div>';
+    }).join('');
+}// ==========================================
+// ===== ٦. الإحصائيات =====
+// ==========================================
+
+function updateStats() {
+    document.getElementById('totalTeachers').textContent = teachers.length;
+    var subjects = new Set(teachers.map(function(t) { return t.subject; }));
+    document.getElementById('totalSubjects').textContent = subjects.size;
+    var totalRatings = 0;
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.startsWith('rated_')) {
+            totalRatings++;
+        }
+    }
+    document.getElementById('totalRatings').textContent = totalRatings;
+}
+
+// ==========================================
+// ===== ٧. إدارة المدرسين =====
+// ==========================================
+
+function showAddModal() {
+    document.getElementById('modalTitle').textContent = '➕ إضافة مدرس جديد';
+    document.getElementById('editId').value = '';
+    document.getElementById('teacherName').value = '';
+    document.querySelectorAll('.subject-checkbox').forEach(function(cb) { cb.checked = false; });
+    document.getElementById('stage1').checked = false;
+    document.getElementById('stage2').checked = false;
+    document.getElementById('stage3').checked = false;
+    document.querySelectorAll('.area-checkbox').forEach(function(cb) { cb.checked = false; });
+    document.getElementById('teacherImage').value = '';
+    document.getElementById('teacherPhone').value = '';
+    document.getElementById('teacherVideo').value = '';
+    document.getElementById('teacherDescription').value = '';
+    document.getElementById('teacherModal').style.display = 'block';
+}
+
+function editTeacher(id) {
+    var teacher = teachers.find(function(t) { return t.id === id; });
+    if (!teacher) return;
+    document.getElementById('modalTitle').textContent = '✏️ تعديل مدرس';
+    document.getElementById('editId').value = id;
+    document.getElementById('teacherName').value = teacher.name;
+    
+    document.querySelectorAll('.subject-checkbox').forEach(function(cb) {
+        cb.checked = teacher.subjects && teacher.subjects.includes(cb.value);
+    });
+    
+    document.getElementById('stage1').checked = teacher.stages && teacher.stages.includes('ابتدائي');
+    document.getElementById('stage2').checked = teacher.stages && teacher.stages.includes('اعدادي');
+    document.getElementById('stage3').checked = teacher.stages && teacher.stages.includes('ثانوي');
+    
+    document.querySelectorAll('.area-checkbox').forEach(function(cb) {
+        cb.checked = teacher.areas && teacher.areas.includes(cb.value);
+    });
+    
+    document.getElementById('teacherImage').value = teacher.image || '';
+    document.getElementById('teacherPhone').value = teacher.phone;
+    document.getElementById('teacherVideo').value = teacher.video || '';
+    document.getElementById('teacherDescription').value = teacher.description || '';
+    document.getElementById('teacherModal').style.display = 'block';
+}
+
+function saveTeacher() {
+    var id = document.getElementById('editId').value;
+    var name = document.getElementById('teacherName').value.trim();
+    
+    var subjects = [];
+    document.querySelectorAll('.subject-checkbox:checked').forEach(function(cb) {
+        subjects.push(cb.value);
+    });
+    
+    var stages = [];
+    if (document.getElementById('stage1').checked) stages.push('ابتدائي');
+    if (document.getElementById('stage2').checked) stages.push('اعدادي');
+    if (document.getElementById('stage3').checked) stages.push('ثانوي');
+    
+    var areas = [];
+    document.querySelectorAll('.area-checkbox:checked').forEach(function(cb) {
+        areas.push(cb.value);
+    });
+    
+    var image = document.getElementById('teacherImage').value.trim();
+    var phone = document.getElementById('teacherPhone').value.trim();
+    var video = document.getElementById('teacherVideo').value.trim();
+    var description = document.getElementById('teacherDescription').value.trim();
+
+    if (!name || subjects.length === 0 || stages.length === 0 || !phone) {
+        showToast('❌ يرجى ملء جميع الحقول المطلوبة (الاسم، مادة واحدة على الأقل، مرحلة واحدة على الأقل، رقم واتساب)', 'error');
+        return;
+    }
+
+    if (id) {
+        var index = teachers.findIndex(function(t) { return t.id == id; });
+        if (index !== -1) {
+            teachers[index] = { 
+                id: parseInt(id),
+                name: name,
+                subjects: subjects,
+                stages: stages,
+                areas: areas,
+                image: image || null,
+                phone: phone,
+                video: video || null,
+                description: description,
+                rating: teachers[index].rating || 0,
+                totalRatings: teachers[index].totalRatings || 0
+            };
+        }
+    } else {
+        var newId = Math.max.apply(null, teachers.map(function(t) { return t.id; })) + 1;
+        teachers.push({ 
+            id: newId,
+            name: name,
+            subjects: subjects,
+            stages: stages,
+            areas: areas,
+            image: image || null,
+            phone: phone,
+            video: video || null,
+            description: description,
+            rating: 0,
+            totalRatings: 0
+        });
+    }
+
+    saveTeachers();
+    renderTeachers();
+    updateStats();
+    closeModal();
+    showToast('✅ تم الحفظ بنجاح', 'success');
+}
+
+function deleteTeacher(id) {
+    var teacher = teachers.find(function(t) { return t.id === id; });
+    if (!teacher) return;
+    if (confirm('⚠️ هل أنت متأكد من حذف المدرس "' + teacher.name + '"؟')) {
+        teachers = teachers.filter(function(t) { return t.id !== id; });
+        saveTeachers();
+        renderTeachers();
+        updateStats();
+        showToast('✅ تم الحذف بنجاح', 'success');
+    }
+}
+
+function closeModal() {
+    document.getElementById('teacherModal').style.display = 'none';
+}// ==========================================
+// ===== ٨. إدارة التقييمات =====
+// ==========================================
+
+async function loadRatings() {
+    var container = document.getElementById('ratingsList');
+    if (!container) return;
+
+    try {
+        var ratings = await getRatings();
+        var allRatings = [];
+
+        for (var teacherId in ratings) {
+            for (var userPhone in ratings[teacherId]) {
+                var r = ratings[teacherId][userPhone];
+                var teacher = teachers.find(function(t) { return t.id == teacherId; });
+                allRatings.push({
+                    teacherId: teacherId,
+                    teacherName: teacher ? teacher.name : 'مدرس محذوف',
+                    userPhone: userPhone,
+                    rating: r.rating,
+                    date: r.date
                 });
             }
-
-            saveTeachers();
-            renderTeachers();
-            updateStats();
-            closeModal();
-            showToast('✅ تم الحفظ بنجاح', 'success');
         }
 
-        function deleteTeacher(id) {
-            var teacher = teachers.find(function(t) { return t.id === id; });
-            if (!teacher) return;
-            if (confirm('⚠️ هل أنت متأكد من حذف المدرس "' + teacher.name + '"؟')) {
-                teachers = teachers.filter(function(t) { return t.id !== id; });
-                saveTeachers();
-                renderTeachers();
-                updateStats();
-                showToast('✅ تم الحذف بنجاح', 'success');
-            }
+        if (allRatings.length === 0) {
+            container.innerHTML = '<div class="empty-msg">📭 لا يوجد تقييمات حالياً</div>';
+            return;
         }
 
-        function closeModal() {
-            document.getElementById('teacherModal').style.display = 'none';
+        var html = '';
+        for (var i = 0; i < allRatings.length; i++) {
+            var r = allRatings[i];
+            html += '<div class="teacher-item">' +
+                '<div class="info">' +
+                '<strong>👨‍🏫 ' + r.teacherName + '</strong>' +
+                '<span>📱 ' + r.userPhone + '</span>' +
+                '<span>⭐ ' + r.rating + ' من ٥</span>' +
+                '<span>📅 ' + new Date(r.date).toLocaleString('ar-EG') + '</span>' +
+                '</div>' +
+                '<div class="actions">' +
+                '<button class="btn-edit" onclick="editRating(\'' + r.teacherId + '\', \'' + r.userPhone + '\')">✏️ تعديل</button>' +
+                '<button class="btn-delete" onclick="deleteRating(\'' + r.teacherId + '\', \'' + r.userPhone + '\')">🗑️ حذف</button>' +
+                '</div>' +
+                '</div>';
         }
+        container.innerHTML = html;
 
-        // ==========================================
-        // ===== ٨. إدارة التقييمات =====
-        // ==========================================
+    } catch (error) {
+        console.error('Error loading ratings:', error);
+        container.innerHTML = '<div class="empty-msg">❌ حدث خطأ في تحميل التقييمات</div>';
+    }
+}
 
-        async function loadRatings() {
-            var container = document.getElementById('ratingsList');
-            if (!container) return;
+async function editRating(teacherId, userPhone) {
+    var ratings = await getRatings();
+    if (!ratings[teacherId] || !ratings[teacherId][userPhone]) {
+        showToast('❌ لا يوجد تقييم', 'error');
+        return;
+    }
 
-            try {
-                var ratings = await getRatings();
-                var allRatings = [];
+    var teacher = teachers.find(function(t) { return t.id == teacherId; });
+    var currentRating = ratings[teacherId][userPhone].rating;
+    var newRating = prompt('✏️ تعديل تقييم المدرس ' + (teacher ? teacher.name : 'مدرس محذوف') + '\nالتقييم الحالي: ' + currentRating + ' من ٥\nأدخل التقييم الجديد (١-٥):');
 
-                for (var teacherId in ratings) {
-                    for (var userPhone in ratings[teacherId]) {
-                        var r = ratings[teacherId][userPhone];
-                        var teacher = teachers.find(function(t) { return t.id == teacherId; });
-                        allRatings.push({
-                            teacherId: teacherId,
-                            teacherName: teacher ? teacher.name : 'مدرس محذوف',
-                            userPhone: userPhone,
-                            rating: r.rating,
-                            date: r.date
-                        });
-                    }
-                }
+    if (newRating === null) return;
 
-                if (allRatings.length === 0) {
-                    container.innerHTML = '<div class="empty-msg">📭 لا يوجد تقييمات حالياً</div>';
-                    return;
-                }
+    var ratingNum = parseInt(newRating);
+    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+        showToast('❌ يرجى إدخال رقم بين ١ و ٥', 'error');
+        return;
+    }
 
-                var html = '';
-                for (var i = 0; i < allRatings.length; i++) {
-                    var r = allRatings[i];
-                    html += '<div class="teacher-item">' +
-                        '<div class="info">' +
-                        '<strong>👨‍🏫 ' + r.teacherName + '</strong>' +
-                        '<span>📱 ' + r.userPhone + '</span>' +
-                        '<span>⭐ ' + r.rating + ' من ٥</span>' +
-                        '<span>📅 ' + new Date(r.date).toLocaleString('ar-EG') + '</span>' +
-                        '</div>' +
-                        '<div class="actions">' +
-                        '<button class="btn-edit" onclick="editRating(\'' + r.teacherId + '\', \'' + r.userPhone + '\')">✏️ تعديل</button>' +
-                        '<button class="btn-delete" onclick="deleteRating(\'' + r.teacherId + '\', \'' + r.userPhone + '\')">🗑️ حذف</button>' +
-                        '</div>' +
-                        '</div>';
-                }
-                container.innerHTML = html;
+    ratings[teacherId][userPhone].rating = ratingNum;
+    await saveRatings(ratings);
 
-            } catch (error) {
-                console.error('Error loading ratings:', error);
-                container.innerHTML = '<div class="empty-msg">❌ حدث خطأ في تحميل التقييمات</div>';
-            }
+    if (teacher) {
+        var values = Object.values(ratings[teacherId] || {}).map(function(r) { return r.rating; });
+        var avg = values.reduce(function(a, b) { return a + b; }, 0) / values.length;
+        teacher.rating = Math.round(avg * 10) / 10;
+        teacher.totalRatings = values.length;
+        saveTeachers();
+    }
+
+    showToast('✅ تم تعديل التقييم بنجاح', 'success');
+    await loadRatings();
+    renderTeachers();
+    updateStats();
+}
+
+async function deleteRating(teacherId, userPhone) {
+    var teacher = teachers.find(function(t) { return t.id == teacherId; });
+    if (!confirm('⚠️ هل أنت متأكد من حذف تقييم المدرس "' + (teacher ? teacher.name : 'مدرس محذوف') + '"؟')) {
+        return;
+    }
+
+    var ratings = await getRatings();
+    if (ratings[teacherId] && ratings[teacherId][userPhone]) {
+        delete ratings[teacherId][userPhone];
+        if (Object.keys(ratings[teacherId]).length === 0) {
+            delete ratings[teacherId];
         }
-
-        async function editRating(teacherId, userPhone) {
-            var ratings = await getRatings();
-            if (!ratings[teacherId] || !ratings[teacherId][userPhone]) {
-                showToast('❌ لا يوجد تقييم', 'error');
-                return;
-            }
-
-            var teacher = teachers.find(function(t) { return t.id == teacherId; });
-            var currentRating = ratings[teacherId][userPhone].rating;
-            var newRating = prompt('✏️ تعديل تقييم المدرس ' + (teacher ? teacher.name : 'مدرس محذوف') + '\nالتقييم الحالي: ' + currentRating + ' من ٥\nأدخل التقييم الجديد (١-٥):');
-
-            if (newRating === null) return;
-
-            var ratingNum = parseInt(newRating);
-            if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
-                showToast('❌ يرجى إدخال رقم بين ١ و ٥', 'error');
-                return;
-            }
-
-            ratings[teacherId][userPhone].rating = ratingNum;
-            await saveRatings(ratings);
-
-            if (teacher) {
-                var values = Object.values(ratings[teacherId] || {}).map(function(r) { return r.rating; });
+        await saveRatings(ratings);
+        
+        if (teacher) {
+            var values = Object.values(ratings[teacherId] || {}).map(function(r) { return r.rating; });
+            if (values.length > 0) {
                 var avg = values.reduce(function(a, b) { return a + b; }, 0) / values.length;
                 teacher.rating = Math.round(avg * 10) / 10;
                 teacher.totalRatings = values.length;
-                saveTeachers();
+            } else {
+                teacher.rating = 0;
+                teacher.totalRatings = 0;
             }
-
-            showToast('✅ تم تعديل التقييم بنجاح', 'success');
-            await loadRatings();
-            renderTeachers();
-            updateStats();
+            saveTeachers();
         }
-
-        async function deleteRating(teacherId, userPhone) {
-            var teacher = teachers.find(function(t) { return t.id == teacherId; });
-            if (!confirm('⚠️ هل أنت متأكد من حذف تقييم المدرس "' + (teacher ? teacher.name : 'مدرس محذوف') + '"؟')) {
-                return;
-            }
-
-            var ratings = await getRatings();
-            if (ratings[teacherId] && ratings[teacherId][userPhone]) {
-                delete ratings[teacherId][userPhone];
-                if (Object.keys(ratings[teacherId]).length === 0) {
-                    delete ratings[teacherId];
-                }
-                await saveRatings(ratings);
-                
-                if (teacher) {
-                    var values = Object.values(ratings[teacherId] || {}).map(function(r) { return r.rating; });
-                    if (values.length > 0) {
-                        var avg = values.reduce(function(a, b) { return a + b; }, 0) / values.length;
-                        teacher.rating = Math.round(avg * 10) / 10;
-                        teacher.totalRatings = values.length;
-                    } else {
-                        teacher.rating = 0;
-                        teacher.totalRatings = 0;
-                    }
-                    saveTeachers();
-                }
-                
-                showToast('✅ تم حذف التقييم بنجاح', 'success');
-                await loadRatings();
-                renderTeachers();
-                updateStats();
-            }
-        }
-
+        
+        showToast('✅ تم حذف التقييم بنجاح', 'success');
+        await loadRatings();
+        renderTeachers();
+        updateStats();
+    }
+}
         // ==========================================
         // ===== ٩. Toast =====
         // ==========================================
