@@ -267,18 +267,3 @@ footer {
         width: 95%;
     }
 }
-#areaFilter {
-    padding: 12px 20px;
-    border: 2px solid #ddd;
-    border-radius: 30px;
-    font-size: 1rem;
-    background: white;
-    transition: 0.3s;
-    min-width: 150px;
-}
-
-#areaFilter:focus {
-    outline: none;
-    border-color: #1a2a6c;
-    box-shadow: 0 0 10px rgba(26, 42, 108, 0.2);
-}
