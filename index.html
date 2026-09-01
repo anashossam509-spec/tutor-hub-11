@@ -3,43 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- ===== SEO الأساسي ===== -->
-    <title>TeachHub.space - منصة المدرسين الأولى في مصر | دروس خصوصية</title>
-    <meta name="description" content="منصة TeachHub.space تجمع أفضل المدرسين في مصر. ابحث عن مدرس في مادتك، شوف تقييماته، وتواصل معه مباشرة. دروس خصوصية في كل المواد.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://teachhub.space/">
-    <meta name="google-site-verification" content="A6A4LBgUqiErzeoIxNYJuLdg1Lj3ffCKGam-QFe1sWM" />
-    
-    <!-- ===== Open Graph (للمشاركة على فيسبوك) ===== -->
-    <meta property="og:title" content="TeachHub.space - منصة المدرسين الأولى في مصر">
-    <meta property="og:description" content="ابحث عن أفضل المدرسين في مصر، شوف التقييمات، وتواصل مباشرة.">
-    <meta property="og:url" content="https://teachhub.space/">
-    <meta property="og:type" content="website">
-    
-    <!-- ===== Twitter Card ===== -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="TeachHub.space - منصة المدرسين الأولى في مصر">
-    <meta name="twitter:description" content="أفضل المنصات لتوصية المدرسين في مصر.">
-    
-    <!-- ===== Structured Data (Schema Markup) ===== -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "TeachHub.space",
-        "url": "https://teachhub.space/",
-        "description": "منصة توصية المدرسين في مصر",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://teachhub.space/?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
-    }
-    </script>
-    
-    
+    <title>Teach Hub - منصة التوصية</title>
     <link rel="stylesheet" href="style.css">
+    <meta name="google-site-verification" content="A6A4LBgUqiErzeoIxNYJuLdg1Lj3ffCKGam-QFe1sWM" />
 </head>
 <body>
 
@@ -48,14 +14,9 @@
         <p>دليلك لأفضل المدرسين - تقييمات حقيقية من أمهات وطلاب</p>
     </header>
 
-    <!-- ===== H1 جديد للمحتوى الرئيسي ===== -->
-    <h1 style="text-align: center; font-size: 2rem; color: #1a2a6c; margin: 30px 0;">
-        ابحث عن أفضل مدرس في مادتك
-    </h1>
-
     <section id="filters">
         <input type="text" id="searchInput" placeholder="🔍 ابحث عن مدرس أو مادة..." onkeyup="filterTeachers()">
-
+        
         <select id="stageFilter" onchange="filterTeachers()">
             <option value="all">كل المراحل</option>
             <option value="ابتدائي">ابتدائي</option>
@@ -78,20 +39,17 @@
             <option value="محاسبه">محاسبة</option>
             <option value="فلسفه">فلسفة</option>
             <option value="برمجه">برمجة</option>
-<!-- أضف هذه الخيارات في قائمة المواد داخل index.html -->
-<option value="ألماني">ألماني</option>
-<option value="فرنساوي">فرنساوي</option>
-<option value="ايطالي">إيطالي</option>
-<option value="رسم">رسم</option>
-<!-- أضف هذا الخيار في قائمة المواد داخل index.html -->
-<option value="دراسات">دراسات</option>
+            <option value="ألماني">ألماني</option>
+            <option value="فرنساوي">فرنساوي</option>
+            <option value="ايطالي">إيطالي</option>
+            <option value="رسم">رسم</option>
+            <option value="دراسات">دراسات</option>
+            <option value="science">Science</option>
         </select>
-
     </section>
 
     <section id="teachers-container"></section>
 
-    <!-- زر لوحة التحكم -->
     <button id="adminBtn" onclick="showAdminPanel()" style="
         position: fixed;
         bottom: 20px;
@@ -113,50 +71,6 @@
     <footer>
         <p>© 2026 Teach Hub - جميع الحقوق محفوظة</p>
     </footer>
-    <!-- ===== Contact Us Section ===== -->
-    <div style="
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 30px;
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border: 1px solid #e8ecf1;
-        text-align: center;
-    ">
-        <h2 style="color: #1a2a6c; margin-bottom: 8px;">📬 تواصل معنا</h2>
-        <p style="color: #7f8c8d; margin-bottom: 20px;">للاستفسارات أو الاقتراحات، تواصل معنا عبر واتساب</p>
-        
-        <a href="https://wa.me/201559950582?text=مرحباً،%20عندي%20استفسار%20عن%20منصة%20TeachHub" 
-           target="_blank" 
-           style="
-               display: inline-block;
-               background: #25D366;
-               color: white;
-               padding: 14px 40px;
-               border-radius: 50px;
-               text-decoration: none;
-               font-weight: bold;
-               font-size: 1.1rem;
-               transition: 0.3s;
-               box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-           "
-           onmouseover="this.style.transform='scale(1.05)'"
-           onmouseout="this.style.transform='scale(1)'">
-            📱 تواصل معنا على واتساب
-        </a>
-        
-        <p style="color: #95a5a6; font-size: 0.85rem; margin-top: 15px;">
-            أو تواصل عبر البريد الإلكتروني: 
-            <a href="mailto:info@teachhub.space" style="color: #1a2a6c; text-decoration: none; font-weight: bold;">
-                anashossam509@gmail.com
-            </a>
-        </p>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
 
     <script src="script.js"></script>
 </body>
