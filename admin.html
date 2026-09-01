@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم TeachHub.space</title>
+    <title>لوحة تحكم Teach Hub</title>
     <style>
         * {
             margin: 0;
@@ -358,6 +358,7 @@
     </style>
 </head>
 <body>
+
     <div id="loginSection" class="login-box">
         <h1>🔐 لوحة التحكم</h1>
         <p>أدخل كلمة المرور للوصول</p>
@@ -435,18 +436,10 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // ==========================================
-        // ===== ١. كلمة المرور وتهيئة JSON Bin =====
-        // ==========================================
-        
         const ADMIN_PASSWORD = "php123";
         const JSONBIN_BIN_ID = '6a936a6cf5f4af5e295310fe';
         const JSONBIN_API_KEY = '$2a$10$vBjRY7byljfCH4ggkOZo5eaJYT4clQVib.OaousKhkjRjjqtITtqu';
         const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/' + JSONBIN_BIN_ID;
-
-        // ==========================================
-        // ===== ٢. دوال JSON Bin =====
-        // ==========================================
 
         async function getTeachersFromCloud() {
             try {
@@ -520,10 +513,6 @@
             }
         }
 
-        // ==========================================
-        // ===== ٣. نظام الدخول =====
-        // ==========================================
-
         function login() {
             var password = document.getElementById('adminPassword').value;
             var error = document.getElementById('errorMsg');
@@ -554,10 +543,6 @@
                 document.getElementById('adminPassword').value = '';
             }
         }
-
-        // ==========================================
-        // ===== ٤. بيانات المدرسين =====
-        // ==========================================
 
         var teachers = [];
 
@@ -596,10 +581,6 @@
             saveTeachersToCloud(teachers);
         }
 
-        // ==========================================
-        // ===== ٥. عرض المدرسين =====
-        // ==========================================
-
         function renderTeachers() {
             var container = document.getElementById('teachersList');
             if (teachers.length === 0) {
@@ -626,10 +607,6 @@
             }).join('');
         }
 
-        // ==========================================
-        // ===== ٦. الإحصائيات =====
-        // ==========================================
-
         function updateStats() {
             document.getElementById('totalTeachers').textContent = teachers.length;
             var subjects = new Set(teachers.map(function(t) { return t.subject; }));
@@ -643,10 +620,6 @@
             }
             document.getElementById('totalRatings').textContent = totalRatings;
         }
-
-        // ==========================================
-        // ===== ٧. إدارة المدرسين =====
-        // ==========================================
 
         function showAddModal() {
             document.getElementById('modalTitle').textContent = '➕ إضافة مدرس جديد';
@@ -748,10 +721,6 @@
             document.getElementById('teacherModal').style.display = 'none';
         }
 
-        // ==========================================
-        // ===== ٨. إدارة التقييمات =====
-        // ==========================================
-
         async function loadRatings() {
             var container = document.getElementById('ratingsList');
             if (!container) return;
@@ -814,7 +783,7 @@
             var currentRating = ratings[teacherId][userPhone].rating;
             var newRating = prompt('✏️ تعديل تقييم المدرس ' + (teacher ? teacher.name : 'مدرس محذوف') + '\nالتقييم الحالي: ' + currentRating + ' من ٥\nأدخل التقييم الجديد (١-٥):');
 
-                     if (newRating === null) return;
+            if (newRating === null) return;
 
             var ratingNum = parseInt(newRating);
             if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
@@ -873,10 +842,6 @@
             }
         }
 
-        // ==========================================
-        // ===== ٩. Toast =====
-        // ==========================================
-
         function showToast(message, type) {
             var toast = document.getElementById('toast');
             toast.textContent = message;
@@ -887,10 +852,6 @@
                 toast.style.display = 'none';
             }, 3000);
         }
-
-        // ==========================================
-        // ===== ١٠. إغلاق المودال =====
-        // ==========================================
 
         window.onclick = function(event) {
             if (event.target === document.getElementById('teacherModal')) {
@@ -904,3 +865,6 @@
 
 </body>
 </html>
+             
+
+           
