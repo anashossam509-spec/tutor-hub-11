@@ -57,10 +57,10 @@ console.log('✅ JSON Bin connected successfully');
 
 async function getRatings() {
     try {
-        const res = await fetch(JSONBIN_URL, {
+        var res = await fetch(JSONBIN_URL, {
             headers: { 'X-Master-Key': JSONBIN_API_KEY }
         });
-        const data = await res.json();
+        var data = await res.json();
         return data.record.ratings || {};
     } catch (error) {
         console.error('Error reading ratings:', error);
@@ -70,11 +70,11 @@ async function getRatings() {
 
 async function saveRatings(ratings) {
     try {
-        const res = await fetch(JSONBIN_URL, {
+        var res = await fetch(JSONBIN_URL, {
             headers: { 'X-Master-Key': JSONBIN_API_KEY }
         });
-        const data = await res.json();
-        const currentData = data.record || {};
+        var data = await res.json();
+        var currentData = data.record || {};
         currentData.ratings = ratings;
 
         await fetch(JSONBIN_URL, {
@@ -93,10 +93,10 @@ async function saveRatings(ratings) {
 
 async function getTeachersFromCloud() {
     try {
-        const res = await fetch(JSONBIN_URL, {
+        var res = await fetch(JSONBIN_URL, {
             headers: { 'X-Master-Key': JSONBIN_API_KEY }
         });
-        const data = await res.json();
+        var data = await res.json();
         return data.record.teachers || [];
     } catch (error) {
         console.error('Error reading teachers:', error);
@@ -106,11 +106,11 @@ async function getTeachersFromCloud() {
 
 async function saveTeachersToCloud(teachersData) {
     try {
-        const res = await fetch(JSONBIN_URL, {
+        var res = await fetch(JSONBIN_URL, {
             headers: { 'X-Master-Key': JSONBIN_API_KEY }
         });
-        const data = await res.json();
-        const currentData = data.record || {};
+        var data = await res.json();
+        var currentData = data.record || {};
         currentData.teachers = teachersData;
 
         await fetch(JSONBIN_URL, {
@@ -131,17 +131,17 @@ async function saveTeachersToCloud(teachersData) {
 // ===== ٤. بيانات المدرسين =====
 // ==========================================
 
-let teachers = [];
+var teachers = [];
 
 async function loadTeachers() {
     try {
-        const cloudTeachers = await getTeachersFromCloud();
+        var cloudTeachers = await getTeachersFromCloud();
 
         if (cloudTeachers && cloudTeachers.length > 0) {
             teachers = cloudTeachers;
             localStorage.setItem('adminTeachers', JSON.stringify(teachers));
         } else {
-            const saved = localStorage.getItem('adminTeachers');
+            var saved = localStorage.getItem('adminTeachers');
             if (saved) {
                 teachers = JSON.parse(saved);
                 if (teachers.length > 0) {
@@ -200,7 +200,7 @@ function displayTeachers(teachersList) {
             '<div class="detail" style="border-bottom: none;"><span>📱 واتساب</span><span class="phone">' + teacher.phone + '</span></div>' +
             '<p style="font-size:0.9rem;color:#7f8c8d;margin:10px 0;text-align:right;">📝 ' + (teacher.description || '') + '</p>' +
             videoButton +
-            '<a href="https://wa.me/' + teacher.phone + '?text=السلام%20عليكم%20أستاذ%20' + encodeURIComponent(teacher.name) + '،%20أنا%20جيت%20من%20منصة%20Teach%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" class="whatsapp-btn" target="_blank">📱 تواصل مع المدرس</a>' +
+            '<a href="https://wa.me/' + teacher.phone + '?text=السلام%20عليكم%20أستاذ%20' + encodeURIComponent(teacher.name) + '،%20أنا%20جيت%20من%20منصة%20Teachers%20Hub%20وأريد%20الاستفسار%20عن%20الدروس" class="whatsapp-btn" target="_blank">📱 تواصل مع المدرس</a>' +
             '<button class="rate-btn" onclick="rateTeacher(' + teacher.id + ')">⭐ قيم المدرس</button>' +
             '<button class="share-btn" onclick="sharePlatform(' + teacher.id + ')">📢 شارك المنصة مع طلابك وأولياء الأمور</button>' +
             '</div>';
@@ -212,20 +212,19 @@ function displayTeachers(teachersList) {
 // ==========================================
 // ===== ٦. فلتر البحث =====
 // ==========================================
+
 function filterTeachers() {
     var searchText = document.getElementById('searchInput').value.toLowerCase().trim();
     var stageFilter = document.getElementById('stageFilter').value;
     var subjectFilter = document.getElementById('subjectFilter').value;
-    var areaFilter = document.getElementById('areaFilter').value; // ← جديد
 
     var filtered = teachers.filter(function(teacher) {
         var matchSearch = teacher.name.toLowerCase().includes(searchText) || 
-                         (teacher.subjects && teacher.subjects.some(function(s) { return s.toLowerCase().includes(searchText); }));
+                         teacher.subject.toLowerCase().includes(searchText);
         var matchStage = stageFilter === 'all' || (teacher.stages && teacher.stages.includes(stageFilter));
-        var matchSubject = subjectFilter === 'all' || (teacher.subjects && teacher.subjects.includes(subjectFilter));
-        var matchArea = areaFilter === 'all' || (teacher.areas && teacher.areas.includes(areaFilter)); // ← جديد
+        var matchSubject = subjectFilter === 'all' || teacher.subject === subjectFilter;
 
-        return matchSearch && matchStage && matchSubject && matchArea;
+        return matchSearch && matchStage && matchSubject;
     });
 
     var sorted = filtered.slice().sort(function(a, b) {
@@ -314,7 +313,7 @@ function sharePlatform(teacherId) {
     if (!teacher) return;
 
     var url = window.location.href;
-    var message = '📚 أنا المدرس ' + teacher.name + ' على منصة Teach Hub\nشوفوا تقييماتي وتواصلوا معي:\n' + url + '\n\n👨‍🎓 للطلاب: قيموا مدرسكم وساعدوه يظهر في المنصة\n👨‍👩‍👦 لأولياء الأمور: شوفوا التقييمات وتواصلوا مع أفضل المدرسين\n👨‍🏫 للمدرسين: سجلوا في المنصة ووصلوا لأكبر عدد من الطلاب';
+    var message = '📚 أنا المدرس ' + teacher.name + ' على منصة Teachers Hub\nشوفوا تقييماتي وتواصلوا معي:\n' + url + '\n\n👨‍🎓 للطلاب: قيموا مدرسكم وساعدوه يظهر في المنصة\n👨‍👩‍👦 لأولياء الأمور: شوفوا التقييمات وتواصلوا مع أفضل المدرسين\n👨‍🏫 للمدرسين: سجلوا في المنصة ووصلوا لأكبر عدد من الطلاب';
 
     window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank');
 }
@@ -341,10 +340,6 @@ function showAdminPanel() {
 document.addEventListener('DOMContentLoaded', function() {
     loadTeachers();
 });
-// تحديث البيانات كل 10 ثواني
-setInterval(function() {
-    refreshData();
-}, 10000); // 10000 ملي ثانية = 10 ثواني
 
 console.log('🛡️ نظام الحماية مفعل بنجاح');
 console.log('📊 عدد المدرسين:', teachers.length);
