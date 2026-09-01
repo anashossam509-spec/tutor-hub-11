@@ -212,19 +212,20 @@ function displayTeachers(teachersList) {
 // ==========================================
 // ===== ٦. فلتر البحث =====
 // ==========================================
-
 function filterTeachers() {
     var searchText = document.getElementById('searchInput').value.toLowerCase().trim();
     var stageFilter = document.getElementById('stageFilter').value;
     var subjectFilter = document.getElementById('subjectFilter').value;
+    var areaFilter = document.getElementById('areaFilter').value; // ← جديد
 
     var filtered = teachers.filter(function(teacher) {
         var matchSearch = teacher.name.toLowerCase().includes(searchText) || 
-                         teacher.subject.toLowerCase().includes(searchText);
+                         (teacher.subjects && teacher.subjects.some(function(s) { return s.toLowerCase().includes(searchText); }));
         var matchStage = stageFilter === 'all' || (teacher.stages && teacher.stages.includes(stageFilter));
-        var matchSubject = subjectFilter === 'all' || teacher.subject === subjectFilter;
+        var matchSubject = subjectFilter === 'all' || (teacher.subjects && teacher.subjects.includes(subjectFilter));
+        var matchArea = areaFilter === 'all' || (teacher.areas && teacher.areas.includes(areaFilter)); // ← جديد
 
-        return matchSearch && matchStage && matchSubject;
+        return matchSearch && matchStage && matchSubject && matchArea;
     });
 
     var sorted = filtered.slice().sort(function(a, b) {
