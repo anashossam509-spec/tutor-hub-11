@@ -323,7 +323,7 @@ function sharePlatform(teacherId) {
 // ==========================================
 
 function showAdminPanel() {
-    var password = prompt("🔐  اااأدخل كلمة المرور للوصول إلى لوحة التحكم:");
+    var password = prompt("🔐 ممنوع دخول الطلاب والمدرسين:");
     if (password === null) return;
 
     if (password === "php123") {
